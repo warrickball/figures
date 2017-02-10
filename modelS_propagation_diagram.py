@@ -7,14 +7,14 @@ from matplotlib import pyplot as pl
 # Model S can be downloaded from
 # http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c
 try:
-    fgong = io.load_fgong('modelS.fgong')
+    fgong = io.load_fgong('data/modelS.fgong')
 except IOError:
     import urllib2
     response = urllib2.urlopen('http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c')
-    with open('modelS.fgong','w') as f:
+    with open('data/modelS.fgong','w') as f:
         f.write(response.read())
 
-    fgong = io.load_fgong('modelS.fgong')
+    fgong = io.load_fgong('data/modelS.fgong')
         
 M,R = fgong['glob'][:2]
 r,P,rho,G1,A = fgong['var'][:-1,[0,3,4,9,14]].T

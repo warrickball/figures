@@ -7,10 +7,13 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy.special import sph_harm
 from numpy import sin, cos, pi
 
+period = 1.0  # in seconds
+Nframes = 50
+interval = period/Nframes*1e3  # is milliseconds
+
 def update(i, ax):
     ax.cla()
-    dr = sph_harm(emm,ell,Ph,Th).real*cos(0.05*2.*pi*i)
-    print(i)
+    dr = sph_harm(emm,ell,Ph,Th).real*cos(2.*pi*i/Nframes)
     x = (1.+dr)*sin(Th)*cos(Ph)
     y = (1.+dr)*sin(Th)*sin(Ph)
     z = (1.+dr)*cos(Th)
@@ -33,7 +36,7 @@ plot_kwargs = {'rstride':2,
 ell = 3
 emm = 2
 
-fig = pl.figure(figsize=(2,2))
+fig = pl.figure(figsize=(6,6))
 # ax = Axes3D.Axes3D(fig)  # this is what tutorial uses
 ax = pl.gca(projection='3d')
 
@@ -48,7 +51,9 @@ Th, Ph = np.meshgrid(np.linspace(0., pi, 51),
 
 update(0, ax)
 
-ani = animation.FuncAnimation(fig, update, 20,
-                              fargs=(ax,), interval=100, repeat=False)
+ani = animation.FuncAnimation(fig, update, Nframes,
+                              fargs=(ax,), interval=interval, repeat=False)
+
+# Much smoother if we save it
 # pl.show()
-ani.save('animate_sph.gif')
+ani.save('animate_sph.gif', writer='imagemagick')

@@ -7,14 +7,14 @@ from astropy.io import fits
 # Garcia R., Turck-Chieze S., Boumier P. et al. 2005, A&A, 442, 385 
 # http://irfu.cea.fr/Phocea/file.php?class=astimg&file=1130/GOLF_velocity_series_mean_pm1_pm2.fits.gz
 try:
-    data = fits.open('data/golf_mean_pm1_pm2.fits.gz')[0].data
+    data = fits.open('data/GOLF_mean_pm1_pm2.fits.gz')[0].data
 except IOError:
     import urllib2
     response = urllib2.urlopen('http://irfu.cea.fr/Phocea/file.php?class=astimg&file=1130/GOLF_velocity_series_mean_pm1_pm2.fits.gz')
-    with open('data/golf_mean_pm1_pm2.fits.gz', 'w') as f:
+    with open('data/GOLF_mean_pm1_pm2.fits.gz', 'w') as f:
         f.write(response.read())
 
-    data = fits.open('data/golf_mean_pm1_pm2.fits.gz')[0].data
+    data = fits.open('data/GOLF_mean_pm1_pm2.fits.gz')[0].data
         
 x = data
 dt = 60.0

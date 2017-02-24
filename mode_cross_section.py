@@ -4,6 +4,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as pl
 import numpy as np
 from scipy.special import sph_harm, factorial
+from tomso import adipls, io
 
 fig = pl.figure(figsize=(6,6))
 # ax = fig.add_subplot(111, projection='3d')  # equivalent?
@@ -52,13 +53,21 @@ z = np.outer(np.ones(np.size(phi)), np.cos(theta))
 a = get_colour(theta, phi)
 ax.plot_surface(x, y, z, facecolors=a, **kw)
 
-# r,a have shape Nr, Ntheta
-r = np.linspace(0.,1.,51)
-a = np.outer(np.sin(2.*np.pi*r), np.ones(len(theta)))
+fgong = io.load_fgong('data/modelS.fgong')
+css, eigs = adipls.load_amde('data/modelS.amde')
+I = np.where(css['ell']==ell)[0]
+i = I[np.argmin((css['nu_Ri'][I]-3.)**2)]
+r = eigs[i][:,0]
+y1 = eigs[i][:,1]
+rho = np.interp(r, fgong['var'][::-1,0]/fgong['glob'][1], fgong['var'][::-1,4])
+
+# r = np.linspace(0.,1.,51)
+# a = np.outer(np.sin(2.*np.pi*r), np.ones(len(theta)))
+a = np.outer(r*rho**0.5*y1, np.ones(len(theta)))
 a = a*sph_harm(emm, ell, 
                np.outer(np.ones(len(r)), np.ones(len(theta))), 
                np.outer(np.ones(len(r)), theta)).real
-a = pl.cm.seismic(0.5+0.5*a)
+a = pl.cm.seismic(0.5+0.5*a/np.max(np.abs(a)))
 
 x = np.outer(r, np.sin(theta))
 y = 0.*x

@@ -8,11 +8,12 @@ from scipy.special import sph_harm
 from numpy import sin, cos, pi
 
 period = 1.0  # in seconds
-Nframes = 50
+Nframes = 20
 interval = period/Nframes*1e3  # is milliseconds
 
 def update(i, ax):
     ax.cla()
+
     dr = sph_harm(emm,ell,Ph,Th).real*cos(2.*pi*i/Nframes)
     x = (1.+dr)*sin(Th)*cos(Ph)
     y = (1.+dr)*sin(Th)*sin(Ph)
@@ -39,21 +40,16 @@ emm = 2
 fig = pl.figure(figsize=(6,6))
 # ax = Axes3D.Axes3D(fig)  # this is what tutorial uses
 ax = pl.gca(projection='3d')
-
-# dtheta = pi/100.
-# dphi = 2.*pi/100.
-
-# th = np.arange(0., pi+dtheta, dtheta)
-# ph = np.arange(-pi, pi+dphi, dphi)
-# Th, Ph = np.meshgrid(th, ph)
-Th, Ph = np.meshgrid(np.linspace(0., pi, 51),
-                     np.linspace(-pi, pi, 51))
+th = np.linspace(0., pi, 51)
+ph = np.linspace(-pi, pi, 51)
+Th, Ph = np.meshgrid(th, ph)
 
 update(0, ax)
 
 ani = animation.FuncAnimation(fig, update, Nframes,
-                              fargs=(ax,), interval=interval, repeat=False)
+                              fargs=(ax,), interval=interval, repeat=True)
 
 # Much smoother if we save it
-# pl.show()
-ani.save('animate_sph.gif', writer='imagemagick')
+ani.save('output/animate_sph_harm.gif', writer='imagemagick')
+pl.show()
+

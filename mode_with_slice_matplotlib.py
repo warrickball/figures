@@ -11,7 +11,10 @@ fig = pl.figure(figsize=(6,6))
 ax = pl.gca(projection='3d')  # equivalent?
 ell = 20
 emm = 16
-amax = 0.55    # np.sqrt((2.*ell+1.)/(4.*np.pi)*factorial(l-m)/factorial(l+m)) ? 
+amax = 0.55    # np.sqrt((2.*ell+1.)/(4.*np.pi)*factorial(l-m)/factorial(l+m)) ?
+
+Ntheta = 101
+Nphi = 51
 
 def get_colour(theta, phi):
     a = sph_harm(emm, ell, 
@@ -28,25 +31,25 @@ kw = {'antialiased': True,
       'rstride': 2}
 
 # phi = np.linspace(0.5*np.pi, 2.0*np.pi, 100)
-theta = np.linspace(0.0, np.pi, 201)
+theta = np.linspace(0.0, np.pi, Ntheta)
 
 # plotting as three separate segments avoids mplot3d getting confused about order
 # x,y,z,a all have shape Nphi, Ntheta
-phi = np.linspace(0.5*np.pi, 1.0*np.pi, 101)
+phi = np.linspace(0.5*np.pi, 1.0*np.pi, Nphi)
 x = np.outer(np.cos(phi), np.sin(theta))
 y = np.outer(np.sin(phi), np.sin(theta))
 z = np.outer(np.ones(np.size(phi)), np.cos(theta))
 a = get_colour(theta, phi)
 ax.plot_surface(x, y, z, facecolors=a, **kw)
 
-phi = np.linspace(1.0*np.pi, 1.5*np.pi, 100)
+phi = np.linspace(1.0*np.pi, 1.5*np.pi, Nphi)
 x = np.outer(np.cos(phi), np.sin(theta))
 y = np.outer(np.sin(phi), np.sin(theta))
 z = np.outer(np.ones(np.size(phi)), np.cos(theta))
 a = get_colour(theta, phi)
 ax.plot_surface(x, y, z, facecolors=a, **kw)
 
-phi = np.linspace(0.0*np.pi, 0.5*np.pi, 100)
+phi = np.linspace(0.0*np.pi, 0.5*np.pi, Nphi)
 x = np.outer(np.cos(phi), np.sin(theta))
 y = np.outer(np.sin(phi), np.sin(theta))
 z = np.outer(np.ones(np.size(phi)), np.cos(theta))
@@ -57,8 +60,8 @@ fgong = io.load_fgong('data/modelS.fgong')
 css, eigs = adipls.load_amde('data/modelS.amde')
 I = np.where(css['ell']==ell)[0]
 i = I[np.argmin((css['nu_Ri'][I]-3.)**2)]
-r = eigs[i][:,0]
-y1 = eigs[i][:,1]
+r = eigs[i][:,0][::3]
+y1 = eigs[i][:,1][::3]
 rho = np.interp(r, fgong['var'][::-1,0]/fgong['glob'][1], fgong['var'][::-1,4])
 
 # r = np.linspace(0.,1.,51)

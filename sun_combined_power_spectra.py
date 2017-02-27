@@ -25,6 +25,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('datasets', type=str, nargs='+',
                     help="List of datasets to be plotted.  Options are " + \
                     "'golf', 'spm_red,' 'spm_green' or 'spm_blue'.")
+parser.add_argument('-s','--smoothing', type=int, nargs=1, default=20,
+                    help="Number of points for boxcar smoothing.")
 args = parser.parse_args()
 
 # the Fourier transforms take some time to calculate, so I do some
@@ -70,7 +72,7 @@ for key in args.datasets:
     t = dt*np.arange(2*len(y)-2)
     df = 1./t[-1]
     f = np.arange(0.0, 0.5/dt+1.1*df, df)
-    yy = np.convolve(np.abs(y)**2, np.ones(10)/10., mode='same')
+    yy = np.convolve(np.abs(y)**2, np.ones(args.smoothing)/args.smoothing, mode='same')
 
     pl.loglog(1e3*f, yy, lw=1.0)
 

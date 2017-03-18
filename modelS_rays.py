@@ -1,10 +1,20 @@
 #!/usr/bin/env python
 
+"""Illustrates (approximate) ray propagation for p-mode in Model S.
+Currently only seems to work up to l=49.  Still need to 
+- check that the inner turning point is correct,
+- start integration from upper reflecting boundary, and
+- add options for how many times to "bounce" at the surface.
+
+"""
+
 import numpy as np
 from matplotlib import pyplot as pl
 from tomso import io
 from scipy import integrate as spint
 from argparse import ArgumentParser
+
+pl.rcParams['figure.figsize'] = 6, 6
 
 parser = ArgumentParser()
 parser.add_argument('ell', type=int, nargs='+')
@@ -83,19 +93,34 @@ for ell in args.ell:
     pl.arrow(x[-2], y[-2], x[-1]-x[-2], y[-1]-y[-2],
              color=inward_line.get_color(), width=0.002)
 
-    sol = spint.odeint(v, [s[-1], th[-1]], t, args=((1,-1),))
+    # sol = spint.odeint(v, [s[-1], th[-1]], t, args=((1,-1),))
+    # s, th = sol.T
 
-    s, th = sol.T
+    # th = th[0]+2.*(th[0]-th[-1])-th
+    th = 2.*th[-1]-th
     x = s*np.cos(th)/R
     y = s*np.sin(th)/R
     pl.plot(x, y, color=inward_line.get_color())
 
+    th = th[0]-(th-th[0])
+    x = s*np.cos(th)/R
+    y = s*np.sin(th)/R
+    pl.plot(x, y, color=inward_line.get_color())
+
+    th = np.linspace(0., 2.*np.pi, 100)
+    x = np.min(s)*np.cos(th)/R
+    y = np.min(s)*np.sin(th)/R
+    pl.plot(x, y, '--', color=inward_line.get_color())
+    
 th = np.linspace(0., 2.*np.pi, 100)
 s = np.ones(len(th))
 x = s*np.cos(th)
 y = s*np.sin(th)
     
 pl.plot(x, y, 'k-')
+pl.subplots_adjust(top=1,bottom=0,left=0,right=1)
+pl.axis([-1.1, 1.1, -1.1, 1.1])
+pl.axis('off')
 pl.show()
 
 # pl.plot(r, v_gh)

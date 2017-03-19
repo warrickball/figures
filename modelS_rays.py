@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 """Illustrates (approximate) ray propagation for p-mode in Model S.
-Currently only seems to work up to l=49.  Still need to 
+Currently only seems to work up to l=49 (and fails on a few
+intermediate values too).  Still need to
 - check that the inner turning point is correct,
 - start integration from upper reflecting boundary, and
 - add options for how many times to "bounce" at the surface.
@@ -21,6 +22,7 @@ parser.add_argument('ell', type=int, nargs='+')
 args = parser.parse_args()
 
 tau = 2.*np.pi
+th_max = 0.9*tau
 
 # Model S can be downloaded from
 # http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c
@@ -66,6 +68,7 @@ for ell in args.ell:
     # v_gh = v_gh[I]
     # r = r[I]
 
+    # RHS of dlnr/ds, dtheta/ds
     def v(x, t, sign=(-1,-1)):
         ri, thi = x
         # return [sign[0]*ri*np.interp(ri, r[::-1], v_gr[::-1], left=np.nan, right=np.nan),
@@ -79,38 +82,37 @@ for ell in args.ell:
     I = np.isfinite(s*th)
     s = s[I]
     th = th[I]
-    t = t[I]
+
+    # this completes one arc, which we then store
+    th = np.hstack((th, 2.*th[-1]-th[::-1]))
+    s = np.hstack((s, s[::-1]))
+
+    th_one = np.copy(th)
+    s_one = np.copy(s)
+    
+    # to make the complete arc (with bounces), we add more arcs until
+    # we get to the desired angle, then cut everything up to that
+    # angle
+    for i in range(100):
+        if np.abs(th[-1]-th[0]) < th_max:
+            th = np.hstack((th, th_one-th[0]+th[-1]))
+            s = np.hstack((s, s_one))
+        else:
+            s = s[np.abs(th-th[0]) < th_max]
+            th = th[np.abs(th-th[0]) < th_max]
+            break
+    
     x = s*np.cos(th)/R
     y = s*np.sin(th)/R
-
-    # pl.plot(t, r)
-    # pl.plot(t, th)
-    # pl.show()
-
-    inward_line, = pl.plot(x, y)
-    # pl.plot([x[0]], [y[0]], 'o')
+    arc, = pl.plot(x, y)
 
     pl.arrow(x[-2], y[-2], x[-1]-x[-2], y[-1]-y[-2],
-             color=inward_line.get_color(), width=0.002)
-
-    # sol = spint.odeint(v, [s[-1], th[-1]], t, args=((1,-1),))
-    # s, th = sol.T
-
-    # th = th[0]+2.*(th[0]-th[-1])-th
-    th = 2.*th[-1]-th
-    x = s*np.cos(th)/R
-    y = s*np.sin(th)/R
-    pl.plot(x, y, color=inward_line.get_color())
-
-    th = th[0]-(th-th[0])
-    x = s*np.cos(th)/R
-    y = s*np.sin(th)/R
-    pl.plot(x, y, color=inward_line.get_color())
+             color=arc.get_color(), width=0.002)
 
     th = np.linspace(0., 2.*np.pi, 100)
     x = np.min(s)*np.cos(th)/R
     y = np.min(s)*np.sin(th)/R
-    pl.plot(x, y, '--', color=inward_line.get_color())
+    pl.plot(x, y, '--', color=arc.get_color())
     
 th = np.linspace(0., 2.*np.pi, 100)
 s = np.ones(len(th))
@@ -122,7 +124,3 @@ pl.subplots_adjust(top=1,bottom=0,left=0,right=1)
 pl.axis([-1.1, 1.1, -1.1, 1.1])
 pl.axis('off')
 pl.show()
-
-# pl.plot(r, v_gh)
-# pl.plot(r, v_gr)
-# pl.show()

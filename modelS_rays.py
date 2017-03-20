@@ -18,7 +18,10 @@ from argparse import ArgumentParser
 pl.rcParams['figure.figsize'] = 6, 6
 
 parser = ArgumentParser()
-parser.add_argument('ell', type=int, nargs='+')
+parser.add_argument('--ell', type=int, nargs='+', default=[2, 20, 25, 75],
+                    help='angular degree(s) of the desired rays')
+parser.add_argument('--nu', type=float, default=3.002e-3,
+                    help='cyclic frequency in Hz')
 args = parser.parse_args()
 
 tau = 2.*np.pi
@@ -36,8 +39,7 @@ except IOError:
 
     fgong = io.load_fgong('data/modelS.fgong')
 
-nu = 3.09e-3  # cyclic frequency in Hz
-omega = nu*tau
+omega = args.nu*tau # angular frequency in Hz, after JCD's cover picture
     
 M,R = fgong['glob'][:2]
 r,P,rho,G1,A = fgong['var'][:-1,[0,3,4,9,14]].T

@@ -18,11 +18,19 @@ from argparse import ArgumentParser
 pl.rcParams['figure.figsize'] = 6, 6
 
 parser = ArgumentParser()
-parser.add_argument('ell', type=int, nargs='+')
+parser.add_argument('--ell', type=int, nargs='+', default=[2, 20, 25, 75],
+                    help='angular degree(s) of the desired rays')
+parser.add_argument('--nu', type=float, default=3.002e-3,
+                    help='cyclic frequency in Hz')
+parser.add_argument('--theta-right', type=float, default=0.4,
+                    help='angle to travel through clockwise, in cycles')
+parser.add_argument('--theta-left', type=float, default=0.4,
+                    help='angle to travel through counter-clockwise, in cycles')
 args = parser.parse_args()
 
 tau = 2.*np.pi
-th_max = 0.9*tau
+th_right = args.theta_right*tau
+th_left = args.theta_left*tau
 
 # Model S can be downloaded from
 # http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c
@@ -36,8 +44,7 @@ except IOError:
 
     fgong = io.load_fgong('data/modelS.fgong')
 
-nu = 3.09e-3  # cyclic frequency in Hz
-omega = nu*tau
+omega = args.nu*tau # angular frequency in Hz, after JCD's cover picture
     
 M,R = fgong['glob'][:2]
 r,P,rho,G1,A = fgong['var'][:-1,[0,3,4,9,14]].T
@@ -93,13 +100,15 @@ for ell in args.ell:
     # to make the complete arc (with bounces), we add more arcs until
     # we get to the desired angle, then cut everything up to that
     # angle
+
+    # first clockwise
     for i in range(100):
-        if np.abs(th[-1]-th[0]) < th_max:
+        if np.abs(th[-1]-th[0]) < th_right:
             th = np.hstack((th, th_one-th[0]+th[-1]))
             s = np.hstack((s, s_one))
         else:
-            s = s[np.abs(th-th[0]) < th_max]
-            th = th[np.abs(th-th[0]) < th_max]
+            s = s[np.abs(th-th[0]) < th_right]
+            th = th[np.abs(th-th[0]) < th_right]
             break
     
     x = s*np.cos(th)/R
@@ -109,6 +118,28 @@ for ell in args.ell:
     pl.arrow(x[-2], y[-2], x[-1]-x[-2], y[-1]-y[-2],
              color=arc.get_color(), width=0.002)
 
+    # then counter-clockwise
+    th_one = 2.*th_one[0]-th_one
+    th = np.copy(th_one)
+    s = np.copy(s_one)
+
+    for i in range(100):
+        if np.abs(th[-1]-th[0]) < th_right:
+            th = np.hstack((th, th_one-th[0]+th[-1]))
+            s = np.hstack((s, s_one))
+        else:
+            s = s[np.abs(th-th[0]) < th_right]
+            th = th[np.abs(th-th[0]) < th_right]
+            break
+    
+    x = s*np.cos(th)/R
+    y = s*np.sin(th)/R
+    arc, = pl.plot(x, y, color=arc.get_color())
+
+    pl.arrow(x[-2], y[-2], x[-1]-x[-2], y[-1]-y[-2],
+             color=arc.get_color(), width=0.002)
+        
+    # then dashed circle for inner turning point
     th = np.linspace(0., 2.*np.pi, 100)
     x = np.min(s)*np.cos(th)/R
     y = np.min(s)*np.sin(th)/R

@@ -3,17 +3,18 @@
 import numpy as np
 from matplotlib import pyplot as pl
 from scipy.interpolate import RectBivariateSpline as RBS
+import os
 
 key = 'z0.02_x0.7'
 
-with open('/home/wball/mesa/9575/data/kap_data/gs98_%s.data' % key,'r') as f:
+with open('%s/data/kap_data/gs98_%s.data' % (os.environ['MESA_DIR'], key),'r') as f:
     lines = f.readlines()
 
 opac1 = np.loadtxt(lines[7:])[:,1:].T
 logT1 = np.loadtxt(lines[7:])[:,0]
 logR1 = np.loadtxt(lines[5:6])
 
-with open('/home/wball/mesa/9575/data/kap_data/lowT_fa05_gs98_%s.data' % key,'r') as f:
+with open('%s/data/kap_data/lowT_fa05_gs98_%s.data' % (os.environ['MESA_DIR'], key),'r') as f:
     lines = f.readlines()
 
 opac2 = np.loadtxt(lines[7:])[:,1:].T

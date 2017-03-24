@@ -20,10 +20,9 @@ except IOError:
     data = np.genfromtxt('data/DPi_Dnu.dat', dtype=data_dtype, delimiter=(8,6,5,6,6,3,5,5))
 
 data = data[np.argsort(data['M'])]
-pl.scatter(data['Dnu'], data['DPi'], c=data['M'], s=15, lw=0,
-           cmap=pl.cm.jet)
+scat = pl.scatter(data['Dnu'], data['DPi'], c=data['M'], s=15, lw=0,
+                  cmap=pl.cm.jet)
 ax = pl.gca()
-# pl.colorbar(ax=ax, orientation='horizontal', shrink=0.5)
 ax.set_xscale('log')
 ax.set_yscale('log')
 pl.axis([2., 100., 40., 1000.])
@@ -31,4 +30,7 @@ pl.axis([2., 100., 40., 1000.])
 # pl.ylabel(r'$\Delta\Pi_1$')
 pl.xlabel('large separation ($\mu$Hz)')
 pl.ylabel('period spacing (s)')
+fig = pl.gcf()
+cbax = fig.add_axes([0.14, 0.83, 0.4, 0.05])
+pl.colorbar(scat, cax=cbax, orientation='horizontal')
 pl.show()

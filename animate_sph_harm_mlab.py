@@ -6,14 +6,23 @@ from mayavi import mlab
 from scipy.special import sph_harm, lpmv
 from scipy.optimize import fsolve
 from numpy import pi, sin, cos
+from argparse import ArgumentParser
 import os
+
+parser = ArgumentParser(description="""Uses Mayavi to animates a spherical harmonic with a chosen
+angular degree and azimuthal order.  """)
+parser.add_argument('-l', '--ell', type=int, default=6,
+                    help="angular degree")
+parser.add_argument('-m', '--emm', type=int, default=3,
+                    help="azimuthal order")
+args = parser.parse_args()
 
 Nframes = 40
 period = 1.0  # in seconds
 interval = int(period/Nframes*1000.)  # in milliseconds?
 dphase = 2.*pi/Nframes
-ell = int(os.sys.argv[1])
-emm = int(os.sys.argv[2])
+ell = args.ell
+emm = args.emm
 
 # Get roots of assoc. Legendre polynomials
 

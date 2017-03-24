@@ -6,6 +6,15 @@ from matplotlib import animation
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.special import sph_harm
 from numpy import sin, cos, pi
+from argparse import ArgumentParser
+
+parser = ArgumentParser(description="""Uses matplotlib to animates a spherical harmonic with a chosen
+angular degree and azimuthal order.  """)
+parser.add_argument('-l', '--ell', type=int, default=6,
+                    help="angular degree")
+parser.add_argument('-m', '--emm', type=int, default=3,
+                    help="azimuthal order")
+args = parser.parse_args()
 
 period = 1.0  # in seconds
 Nframes = 20
@@ -34,8 +43,8 @@ plot_kwargs = {'rstride':2,
                'linewidth':0,
                'antialiased':True}
 
-ell = 3
-emm = 2
+ell = args.ell
+emm = args.emm
 
 fig = pl.figure(figsize=(6,6))
 # ax = Axes3D.Axes3D(fig)  # this is what tutorial uses

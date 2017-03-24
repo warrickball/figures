@@ -68,14 +68,13 @@ for key in args.datasets:
         y = np.fft.rfft(timeseries)
         np.save('data/%s' % fftnames[k], y)
 
-    k.lower()
     t = dt*np.arange(2*len(y)-2)
     df = 1./t[-1]
     f = np.arange(0.0, 0.5/dt+1.1*df, df)
-    yy = np.convolve(np.abs(y)**2, np.ones(args.smoothing)/args.smoothing, mode='same')
+    yy = np.convolve(np.abs(y)**2, np.ones(args.smoothing)/args.smoothing, mode='same')/np.median(np.abs(y[np.abs(f)-7.8<0.2])**2)
 
     pl.loglog(1e3*f, yy, lw=1.0)
 
 pl.xlabel('frequency (mHz)')
-pl.ylabel('power')
+pl.ylabel('power relative to background')
 pl.show()

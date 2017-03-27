@@ -18,7 +18,7 @@ from argparse import ArgumentParser
 pl.rcParams['figure.figsize'] = 6, 6
 
 parser = ArgumentParser()
-parser.add_argument('--ell', type=int, nargs='+', default=[2, 20, 25, 75],
+parser.add_argument('-l', '--ell', type=int, nargs='+', default=[2, 20, 25, 75],
                     help='angular degree(s) of the desired rays')
 parser.add_argument('--nu', type=float, default=3.002e-3,
                     help='cyclic frequency in Hz')
@@ -141,8 +141,9 @@ for ell in args.ell:
         
     # then dashed circle for inner turning point
     th = np.linspace(0., 2.*np.pi, 100)
-    x = np.min(s)*np.cos(th)/R
-    y = np.min(s)*np.sin(th)/R
+    s_t = np.interp(0., cs2-omega**2/ell/(ell+1)*r**2, r)
+    x = s_t*np.cos(th)/R
+    y = s_t*np.sin(th)/R
     pl.plot(x, y, '--', color=arc.get_color())
     
 th = np.linspace(0., 2.*np.pi, 100)

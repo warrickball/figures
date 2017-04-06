@@ -38,7 +38,7 @@ for row in davies:
 
 styles = 'ovsd'
 for ell, style in enumerate(styles):
-    nu = np.array([v[0] for k,v in data.iteritems() if k[1]==ell])
+    nu = np.array([v[0] for k,v in data.items() if k[1]==ell])
     pl.plot(np.mod(nu, Delta_nu), nu, style,
             label=r'$\ell=%i$' % ell)
 

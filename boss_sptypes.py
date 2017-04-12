@@ -55,6 +55,17 @@ print(data[0].dtype.names)
     
 # pl.show()
 
-z = np.vstack([i['Flux'] for i in data])
-pl.imshow(z, aspect='auto')
+x = data[0]['LogLam']
+y = np.vstack([i['Flux'] for i in data])
+y = y/np.max(y, axis=1).reshape((-1,1))
+z = pl.cm.jet(y*0.+(x-np.min(x))/(np.max(x)-np.min(x)))
+z = 0.1+0.9*z
+z[...,-1] = y
+
+kwargs = {'aspect':'auto', 
+          'extent':[x[0],x[-1],0,1]}
+
+pl.imshow(np.zeros(z.shape)[:,:,:3], **kwargs)
+pl.imshow(z, **kwargs)
+pl.grid(False)
 pl.show()

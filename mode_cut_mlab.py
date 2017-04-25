@@ -62,4 +62,6 @@ def myplot():
     mlab.mesh(x, y, z, scalars=s, colormap='seismic',
               vmin=smin, vmax=smax)
 
+    mlab.view(azimuth=15.0, elevation=90.0, distance=4.2)
+
 myplot()

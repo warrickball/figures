@@ -4,7 +4,6 @@ import numpy as np
 from matplotlib import pyplot as pl
 
 # Kesseli et al. (2017), arXiv:1702.06957
-
 sptypes = ['O5','O7','O8','O9'] \
           + ['%s%i' % (k,i) for k in 'B' for i in range(1,10)] \
           + ['A0','A1','A2'] + ['A%i_+0.0_Dwarf' % i for i in range(3,10)] \
@@ -18,9 +17,6 @@ for i in [4,5,8]:
 for i in [6,8,9]:
     sptypes.remove('K%i_+0.0_Dwarf' % i)
     
-# sptypes = ['%s%i' % (k,i) for k in 'OBAFGKML' for i in range(1,10)]
-print(sptypes)
-
 try:
     data = np.load('data/boss_sptypes.npy')
 except IOError:
@@ -32,13 +28,6 @@ except IOError:
     for k in sptypes:
         print('Downloading spectrum for SpType %s...' % k)
         response = urllib2.urlopen(url % k)
-        # try:
-        #     response = urllib2.urlopen(url % (k+'_+0.0_Dwarf'))
-        # except urllib2.HTTPError:
-        #     try:
-        #         response = urllib2.urlopen(url % k)
-        #     except urllib2.HTTPError:
-        #         continue
 
         with open('data/tmp.fits','w') as f:
             f.write(response.read())
@@ -48,15 +37,9 @@ except IOError:
     data = np.array(data)
     np.save('data/boss_sptypes.npy', data)
 
-print(data[0].dtype.names)
-# pl.plot(data[0]['LogLam'], data[0]['Flux'])
-# for i in data:
-#     pl.plot(i['LogLam'], i['Flux'])
-    
-# pl.show()
-
-x = data[0]['LogLam']
-y = np.vstack([i['Flux'] for i in data])
+xx = 10.**data[0]['LogLam']/10.
+x = np.linspace(xx[0], xx[-1], len(xx))
+y = np.vstack([np.interp(x, xx, i['Flux']) for i in data])
 y = y/np.max(y, axis=1).reshape((-1,1))
 z = pl.cm.jet(y*0.+(x-np.min(x))/(np.max(x)-np.min(x)))
 z = 0.1+0.9*z
@@ -65,7 +48,30 @@ z[...,-1] = y
 kwargs = {'aspect':'auto', 
           'extent':[x[0],x[-1],0,1]}
 
+# show rainbow of spectra
 pl.imshow(np.zeros(z.shape)[:,:,:3], **kwargs)
 pl.imshow(z, **kwargs)
+pl.xlabel('wavelength (nm)')
+pl.yticks([])
 pl.grid(False)
+
+# annotate spectral lines
+line_data = [['Ha', 656.461]]
+A = pl.axis()
+for (label, wavelength) in line_data:
+    label = label.replace('Ha',r'H$\alpha$')
+    label = label.replace('Hb',r'H$\beta$')
+    pl.plot([wavelength,wavelength],[0,1],'w--', alpha=0.1666667, lw=1.5);
+    pl.annotate(s=label, xy=((wavelength-A[0])/(A[1]-A[0]), 1.02),
+                xycoords='axes fraction', color='k', ha='center')
+
+# annotate spectral types
+N = len(sptypes)
+i_prev = 0
+for letter in ['O','B','A','F','G','K','M','L']:
+    i_next = [i for i in range(N) if sptypes[i].startswith(letter)][-1]+1
+    y_text = 1.0-1.0*i_prev/N-0.5*(i_next-i_prev)/N
+    pl.annotate(s=letter,xy=(-0.04, y_text), xycoords='axes fraction')
+    i_prev = i_next
+
 pl.show()

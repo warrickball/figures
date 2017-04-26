@@ -56,22 +56,35 @@ pl.yticks([])
 pl.grid(False)
 
 # annotate spectral lines
-line_data = [['Ha', 656.461]]
+# line data from http://www.star.ucl.ac.uk/~msw/lines.html
+line_data = [['Ha', 656.461],
+             ['Hb', 486.269],
+             ['NaI', (589.1583+589.7558)/2.],
+             ['MgI', 517.4125],
+             ['CaII', 854.444]]
+
 A = pl.axis()
 for (label, wavelength) in line_data:
     label = label.replace('Ha',r'H$\alpha$')
     label = label.replace('Hb',r'H$\beta$')
-    pl.plot([wavelength,wavelength],[0,1],'w--', alpha=0.1666667, lw=1.5);
+    line, = pl.plot([wavelength,wavelength],[0,1], 'w-', alpha=0.25, lw=1.5);
+    line.set_dashes([4,6])
     pl.annotate(s=label, xy=((wavelength-A[0])/(A[1]-A[0]), 1.02),
                 xycoords='axes fraction', color='k', ha='center')
 
 # annotate spectral types
 N = len(sptypes)
 i_prev = 0
+yticks = [1.0]
 for letter in ['O','B','A','F','G','K','M','L']:
     i_next = [i for i in range(N) if sptypes[i].startswith(letter)][-1]+1
+    yticks.append(1.0-1.0*i_next/N)
     y_text = 1.0-1.0*i_prev/N-0.5*(i_next-i_prev)/N
-    pl.annotate(s=letter,xy=(-0.04, y_text), xycoords='axes fraction')
+    pl.annotate(s=letter,xy=(-0.04, y_text), xycoords='axes fraction',
+                va='center')
     i_prev = i_next
 
+pl.yticks(yticks, ['' for i in range(len(yticks))])
+pl.annotate(s='spectral type', xy=(-0.08, 0.5), xycoords='axes fraction',
+            va='center', rotation=90.0)
 pl.show()

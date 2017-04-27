@@ -7,14 +7,15 @@ from scipy.special import sph_harm, factorial
 from tomso import adipls, io
 
 fig = pl.figure(figsize=(6,6))
-# ax = fig.add_subplot(111, projection='3d')  # equivalent?
-ax = pl.gca(projection='3d')  # equivalent?
+ax = fig.add_subplot(111, projection='3d')  # equivalent?
+# ax = pl.gca(projection='3d')  # equivalent?
+fig.subplots_adjust(left=0., right=1., bottom=0., top=1.)
 ell = 20
 emm = 16
 amax = 0.55    # np.sqrt((2.*ell+1.)/(4.*np.pi)*factorial(l-m)/factorial(l+m)) ?
 
-Ntheta = 101
-Nphi = 51
+Ntheta = 201
+Nphi = 101
 
 def get_colour(theta, phi):
     a = sph_harm(emm, ell, 
@@ -86,5 +87,5 @@ ax.set_xlim(-0.6,0.6)
 ax.set_ylim(-0.6,0.6)
 ax.set_zlim(-0.6,0.6)
 pl.axis('off')
-ax.view_init(0.,-80.)
+ax.view_init(0.,-75.)
 pl.show()

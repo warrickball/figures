@@ -15,12 +15,12 @@ from tomso import io
 from scipy import integrate as spint
 from argparse import ArgumentParser
 
-pl.rcParams['figure.figsize'] = 6, 6
+pl.rcParams['figure.figsize'] = 4.8, 4.8
 
 parser = ArgumentParser()
 parser.add_argument('-l', '--ell', type=int, nargs='+', default=[2, 20, 25, 75],
                     help='angular degree(s) of the desired rays')
-parser.add_argument('--nu', type=float, default=3.002e-3,
+parser.add_argument('--nu', type=float, default=3e-3,
                     help='cyclic frequency in Hz')
 parser.add_argument('--theta-right', type=float, default=0.4,
                     help='angle to travel through clockwise, in cycles')
@@ -35,30 +35,30 @@ th_left = args.theta_left*tau
 # Model S can be downloaded from
 # http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c
 try:
-    fgong = io.load_fgong('data/modelS.fgong')
+    glob, var = io.load_fgong('data/modelS.fgong')
 except IOError:
     import urllib2
     response = urllib2.urlopen('http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c')
     with open('data/modelS.fgong','w') as f:
         f.write(response.read())
 
-    fgong = io.load_fgong('data/modelS.fgong')
+    glob, var = io.load_fgong('data/modelS.fgong')
 
 omega = args.nu*tau # angular frequency in Hz, after JCD's cover picture
     
-M,R = fgong['glob'][:2]
-r,P,rho,G1,A = fgong['var'][:-1,[0,3,4,9,14]].T
-m = M*np.exp(fgong['var'][:-1,1])
+M,R = glob[:2]
+r,P,rho,G1,A = var[:-1,[0,3,4,9,14]].T
+m = M*np.exp(var[:-1,1])
 cs2 = G1*P/rho
 
-G = 6.672e-8
+G = 6.67232e-8
 g = G*m/r**2
 Hp = P/rho/g
 
 omega_BV2 = A*g/r
 omega_AC2 = cs2/4./Hp**2
 
-t = np.linspace(0., 10000., 10000)/R
+t = np.linspace(0., 10000., 100000)/R
 x0 = [0.9995*R, tau/4.]
 
 for ell in args.ell:
@@ -90,6 +90,12 @@ for ell in args.ell:
     s = s[I]
     th = th[I]
 
+    # truncates solutions that accidentally converge on dtheta/dr=0
+    I = np.where(np.diff(th)/np.diff(s)<0.)[0]
+    if len(I)>0:
+        s = s[:I[0]]
+        th = th[:I[0]]
+    
     # this completes one arc, which we then store
     th = np.hstack((th, 2.*th[-1]-th[::-1]))
     s = np.hstack((s, s[::-1]))
@@ -116,7 +122,7 @@ for ell in args.ell:
     arc, = pl.plot(x, y)
 
     pl.arrow(x[-2], y[-2], x[-1]-x[-2], y[-1]-y[-2],
-             color=arc.get_color(), width=0.002)
+             color=arc.get_color(), width=0.01)
 
     # then counter-clockwise
     th_one = 2.*th_one[0]-th_one
@@ -137,7 +143,7 @@ for ell in args.ell:
     arc, = pl.plot(x, y, color=arc.get_color())
 
     pl.arrow(x[-2], y[-2], x[-1]-x[-2], y[-1]-y[-2],
-             color=arc.get_color(), width=0.002)
+             color=arc.get_color(), width=0.01)
         
     # then dashed circle for inner turning point
     th = np.linspace(0., 2.*np.pi, 100)

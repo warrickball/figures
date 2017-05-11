@@ -58,6 +58,13 @@ data = data[data['Plx']>0]
 Hp = data['Hpmag'] + 5.0 + 5.0*np.log10(1e-3*data['Plx'])
 BV = data['BV']
 
+I = ~np.isnan(BV)
+BV = BV[I]
+Hp = Hp[I]
+# pl.hexbin(BV, Hp, cmap='gray_r', gridsize=50, bins='log')
+# pl.hist2d(BV, Hp, cmap='gray_r', bins=100)
+pl.plot(BV, Hp, 'ko', ms=4, alpha=0.1, mew=0)
+
 # original annotations
 MS_BV, MS_Hp = np.array([[-0.18,-2.46], [0.0,0.93], [0.2,2.45],
                          [0.4,3.3], [0.63,5.], 
@@ -75,8 +82,7 @@ pl.plot([0.92,1.07],[0.9,1.],'r-', lw=25, alpha=0.2,
 pl.plot([-0.5,1.0], [8.6,17.34], 'b-', lw=25, alpha=0.1)  # WD
 pl.plot(0.653, 4.86, 'y*', ms=15)  # Sun
 
-# pl.hexbin(BV, Hp)
-pl.plot(BV, Hp, 'ko', ms=4, alpha=0.1)
+
 pl.axis([-0.5, 2., 15., -5.])
 pl.xlabel(r'$B-V$')
 pl.ylabel(r'$M_\mathrm{Hipparcos}$')

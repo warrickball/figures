@@ -7,18 +7,18 @@ from matplotlib import pyplot as pl
 # Model S can be downloaded from
 # http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c
 try:
-    fgong = io.load_fgong('data/modelS.fgong')
+    glob, var = io.load_fgong('data/modelS.fgong')
 except IOError:
     import urllib2
     response = urllib2.urlopen('http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c')
     with open('data/modelS.fgong','w') as f:
         f.write(response.read())
 
-    fgong = io.load_fgong('data/modelS.fgong')
+    glob, var = io.load_fgong('data/modelS.fgong')
         
-M,R = fgong['glob'][:2]
-r,P,rho,G1,A = fgong['var'][:-1,[0,3,4,9,14]].T
-m = M*np.exp(fgong['var'][:-1,1])
+M, R = glob[:2]
+r, P, rho, G1, A = var[:-1,[0,3,4,9,14]].T
+m = M*np.exp(var[:-1,1])
 cs2 = G1*P/rho
 
 G = 6.672e-8

@@ -30,7 +30,7 @@ except IOError:
 
 incs = np.array([90.0-i*15./8. for i in range(len(rot2d[0]))])
 # rot2d has 49 columns, latitudes are 90-i*15/8; i starts at 0
-for inc, rot, err in zip(incs, rot2d.T, err2d.T)[8::8][::-1]:
+for inc, rot, err in list(zip(incs, rot2d.T, err2d.T))[8::8][::-1]:
     c, = pl.plot(rmesh, rot, label='$%i^\circ$' % inc)
     pl.fill_between(rmesh, rot-err, rot+err,
                     color=c.get_color(), alpha=0.5)

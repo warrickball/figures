@@ -9,6 +9,8 @@ intermediate values too).  Still need to
 
 """
 
+# formulae from http://soi.stanford.edu/papers/dissertations/giles/thesis/PDF/chapter02.pdf
+
 import numpy as np
 from matplotlib import pyplot as pl
 from tomso import io

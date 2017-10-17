@@ -5,6 +5,10 @@ from matplotlib import pyplot as pl
 
 # B. Mosser et al., bibcode 2014A&A...572L...5M
 
+# similar data available in 
+# B. Mosser et al., bibcode 2012A%26A...540A.143M
+# ftp://cdsarc.u-strasbg.fr/pub/cats/J/A%2BA/540/A143
+
 data_dtype = [('KIC', int), ('Dnu', float), ('eDnu', float),
               ('DPi', float), ('eDPi', float), ('stat', '|S3'),
               ('M', float), ('eM', float)]

@@ -65,18 +65,24 @@ ax1.axis["top"].label.set_axis_direction("top")
 
 ax1.axis["left"].label.set_text(r'$r/R_\odot$')
 
-# create a parasite axes whose transData in RA, cz
 aux_ax = ax1.get_aux_axes(tr)
-aux_ax.patch = ax1.patch  # for aux_ax to have a clip path as in ax
-ax1.patch.zorder = 0.9  # but this has a side effect that the patch is
+aux_ax.patch = ax1.patch
+ax1.patch.zorder = 0.9
 
 Ncontours = 20
 c = aux_ax.contourf(th, r, rot2d.T[::-1], Ncontours)
-pl.colorbar(c)
+pl.colorbar(c, label='rotation rate (nHz)')
 
+# shade out the regions where inversion is uncertain
+th = np.linspace(0., np.pi/2, 101)
+for level in np.arange(0.01, 0.11, 0.01):
+    ri = np.interp(level, err2d[::-1,15]/rot2d[::-1,15], r[15,::-1])
+    aux_ax.fill_between(th, np.zeros_like(th), ri*np.ones_like(th),
+                        color='w', zorder=zorder+2, alpha=0.3)
+ 
 # plot base of convection zone
 th = np.linspace(0., np.pi/2, 101)
 r = np.ones(len(th))*0.713
 aux_ax.plot(th, r, 'k--')
- 
+
 pl.show()

@@ -70,15 +70,10 @@ aux_ax.patch = ax1.patch
 ax1.patch.zorder = 0.9
 
 Ncontours = 20
-c = aux_ax.contourf(th, r, rot2d.T[::-1], Ncontours)
+data = rot2d.T[::-1]
+data[err2d.T[::-1]/data>0.01] = np.nan
+c = aux_ax.contourf(th, r, data, Ncontours)
 pl.colorbar(c, label='rotation rate (nHz)')
-
-# shade out the regions where inversion is uncertain
-th = np.linspace(0., np.pi/2, 101)
-for level in np.arange(0.01, 0.11, 0.01):
-    ri = np.interp(level, err2d[::-1,15]/rot2d[::-1,15], r[15,::-1])
-    aux_ax.fill_between(th, np.zeros_like(th), ri*np.ones_like(th),
-                        color='w', zorder=zorder+2, alpha=0.3)
  
 # plot base of convection zone
 th = np.linspace(0., np.pi/2, 101)

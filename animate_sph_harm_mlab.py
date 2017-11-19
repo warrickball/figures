@@ -15,6 +15,8 @@ parser.add_argument('-l', '--ell', type=int, default=6,
                     help="angular degree")
 parser.add_argument('-m', '--emm', type=int, default=3,
                     help="azimuthal order")
+parser.add_argument('--save', type=str, default=None,
+                    help="save animation to this file")
 args = parser.parse_args()
 
 Nframes = 40
@@ -106,8 +108,8 @@ def save_frame(filename, phase):
 # print(dataset[0].shape)
 # # mlab.show()
 # write_gif(dataset, 'sph_harm.gif')
-save = True
-if save:
+# save = True
+if args.save:
     from subprocess import call
     phases = np.linspace(0., 2.*np.pi, Nframes+1)[:-1]
     for i, phase in enumerate(phases):
@@ -117,7 +119,7 @@ if save:
     call(['convert', '-loop', '0',
           '-layers', 'Optimize',
           '-delay', delay,
-          'tmp/frame_*.png', 'sph_harm.gif'])
+          'tmp/frame_*.png', args.save])
 
     # cleanup
     for i in range(len(phases)):

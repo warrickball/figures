@@ -14,6 +14,8 @@ parser.add_argument('-l', '--ell', type=int, default=6,
                     help="angular degree")
 parser.add_argument('-m', '--emm', type=int, default=3,
                     help="azimuthal order")
+parser.add_argument('--save', type=str, default=None,
+                    help="save animation to this file")
 args = parser.parse_args()
 
 period = 1.0  # in seconds
@@ -59,6 +61,8 @@ ani = animation.FuncAnimation(fig, update, Nframes,
                               fargs=(ax,), interval=interval, repeat=True)
 
 # Much smoother if we save it
-ani.save('output/animate_sph_harm.gif', writer='imagemagick')
+if args.save:
+    ani.save(args.save, writer='imagemagick')
+    
 pl.show()
 

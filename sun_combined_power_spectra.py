@@ -27,6 +27,8 @@ parser.add_argument('datasets', type=str, nargs='+',
                     "'golf', 'spm_red,' 'spm_green' or 'spm_blue'.")
 parser.add_argument('-s','--smoothing', type=int, nargs=1, default=20,
                     help="Number of points for boxcar smoothing.")
+parser.add_argument('--legend', action='store_const', const=True,
+                    default=False, help="Add a legend to the plot.")
 args = parser.parse_args()
 
 # the Fourier transforms take some time to calculate, so I do some
@@ -47,6 +49,14 @@ filenumbers = {'golf':      '1130',
                'spm_red':   '3581',
                'spm_green': '3581',
                'spm_blue':  '3581'}
+names = {'golf':      'GOLF',
+         'spm_red':   'SPM red',
+         'spm_green': 'SPM green',
+         'spm_blue':  'SPM blue'}
+colors = {'golf':      'k',
+          'spm_red':   'r',
+          'spm_green': 'g',
+          'spm_blue':  'b'}
 
 dt = 60.0  # cadence, which happens to be the same for all timeseries
 for key in args.datasets:
@@ -73,7 +83,9 @@ for key in args.datasets:
     f = np.arange(0.0, 0.5/dt+1.1*df, df)
     yy = np.convolve(np.abs(y)**2, np.ones(args.smoothing)/args.smoothing, mode='same')/np.median(np.abs(y[np.abs(f)-7.8<0.2])**2)
 
-    pl.loglog(1e3*f, yy, lw=1.0)
+    pl.loglog(1e3*f, yy, lw=1.0, label=names[k], color=colors[k])
+
+    if args.legend: pl.legend()
 
 pl.xlabel('frequency (mHz)')
 pl.ylabel('power relative to background')

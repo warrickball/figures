@@ -10,7 +10,8 @@ coords = {'Mount Wilson': (34.22, -118.07),
           'Teide Observatory': (28.3, -16.5097),
           'SAAO': (-33.9347, 18.4776),
           'Carnarvon': (-24.869167, 113.704722),
-          'Paul Wild Observatory': (-30.314, 149.562)}
+          'Paul Wild Observatory': (-30.314, 149.562),
+          'University of Birmingham': (52.450556, -1.930556)}
 
 lon0, lat0 = -45, 0
 ax = pl.subplot(1, 2, 1, projection=ccrs.Orthographic(lon0, lat0)) # (lon, lat)

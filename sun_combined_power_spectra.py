@@ -25,10 +25,22 @@ parser = argparse.ArgumentParser()
 parser.add_argument('datasets', type=str, nargs='+',
                     help="List of datasets to be plotted.  Options are " + \
                     "'golf', 'spm_red,' 'spm_green' or 'spm_blue'.")
-parser.add_argument('-s','--smoothing', type=int, nargs=1, default=20,
+parser.add_argument('-s','--smoothing', type=int, default=20,
                     help="Number of points for boxcar smoothing.")
+parser.add_argument('-a','--alpha', type=float, default=1.0,
+                    help="Opacity (transparent=0.0, opaque=1.0).")
 parser.add_argument('--legend', action='store_const', const=True,
                     default=False, help="Add a legend to the plot.")
+parser.add_argument('--grid', action='store_const', const=True,
+                    default=False, help="Add gridlines to plot.")
+parser.add_argument('--logx', action='store_const', const=True,
+                    default=False, help="Use logarithmic x-axis.")
+parser.add_argument('--logy', action='store_const', const=True,
+                    default=False, help="Use logarithmic y-axis.")
+parser.add_argument('-x', '--xlim', type=float, nargs=2, default=None,
+                    help="Lower and upper limits for x-axis.")
+parser.add_argument('-y', '--ylim', type=float, nargs=2, default=None,
+                    help="Lower and upper limits for y-axis.")
 args = parser.parse_args()
 
 # the Fourier transforms take some time to calculate, so I do some
@@ -83,10 +95,23 @@ for key in args.datasets:
     f = np.arange(0.0, 0.5/dt+1.1*df, df)
     yy = np.convolve(np.abs(y)**2, np.ones(args.smoothing)/args.smoothing, mode='same')/np.median(np.abs(y[np.abs(f)-7.8<0.2])**2)
 
-    pl.loglog(1e3*f, yy, lw=1.0, label=names[k], color=colors[k])
+    if args.logx and args.logy:
+        plot = pl.loglog
+    elif args.logx:
+        plot = pl.semilogx
+    elif args.logy:
+        plot = pl.semilogy
+    else:
+        plot = pl.plot
 
+    plot(1e3*f, yy, lw=1.0, label=names[k], color=colors[k], alpha=args.alpha)
+
+    if args.xlim: pl.xlim(args.xlim)
+    if args.ylim: pl.ylim(args.ylim)
     if args.legend: pl.legend()
 
+    pl.grid(args.grid)
+
 pl.xlabel('frequency (mHz)')
-pl.ylabel('power relative to background')
+pl.ylabel('power spectral density (arbitrary units)')
 pl.show()

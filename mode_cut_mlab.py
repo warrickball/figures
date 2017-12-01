@@ -11,6 +11,24 @@ from mayavi import mlab
 from scipy.special import sph_harm, lpmv, factorial
 from scipy.optimize import fsolve
 from tomso import adipls, io
+from argparse import ArgumentParser
+
+parser = ArgumentParser()
+parser.add_argument('-l', '--ell', type=int, default=20,
+                    help="Angular degree l (default l=20)")
+parser.add_argument('-m', '--emm', type=int, default=16,
+                    help="Azimuthal order m (default m=16)")
+parser.add_argument('-n', '--enn', type=int, default=None,
+                    help="""Radial order n.  You can only choose one of this or the cyclic
+                    frequency n (-f, --freq).  (default n=14)""")
+parser.add_argument('-f', '--freq', type=float, default=None,
+                    help="""Cyclic frequency in mHz.  You can only choose one of this or the
+                    radial order n (-n, --enn).""")
+args = parser.parse_args()
+
+if args.freq and args.enn:
+        raise ValueError("""you can only use one of the radial order (-n,
+        --enn) or the cyclic frequency (-f, --freq)""")
 
 mlab.figure(1, bgcolor=(1, 1, 1), fgcolor=(0, 0, 0), size=(600, 600))
 mlab.clf()
@@ -34,7 +52,15 @@ def myplot():
     glob, var = io.load_fgong('data/modelS.fgong')
     css, eigs = adipls.load_amde('data/modelS.amde')
     I = np.where(css['ell']==ell)[0]
-    i = I[np.argmin((css['nu_Ri'][I]-3.)**2)]
+    if args.freq:
+        i = I[np.argmin((css['nu_Ri'][I]-args.freq)**2)]
+    elif args.enn:
+        i = I[css['enn'][I]==args.enn][0]
+    else:
+        i = I[css['enn'][I]==14][0]
+        
+    print('   n = %i' % css['enn'][i])
+    print('freq = %.6f mHz' % css['nu_Ri'][i])
     r = eigs[i][:,0]
     y1 = eigs[i][:,1]
     rho = np.interp(r, var[::-1,0]/glob[1],
@@ -50,16 +76,18 @@ def myplot():
     smax = np.max(np.abs(s))/2.  # divide by two gives richer colour
     smin = -smax  # guarantees symmetry in colourmap
 
+    # first inner semicircle
     x = np.outer(r, np.sin(th))
     y = 0.*x
     z = np.outer(r, np.cos(th))
-    mlab.mesh(x, y, z, scalars=s, colormap='seismic',
+    mlab.mesh(x, y, z, scalars=-s, colormap='seismic',
               vmin=smin, vmax=smax)
 
+    # second inner semicircle
     y = np.outer(r, np.sin(th))
     x = 0.*y
     z = np.outer(r, np.cos(th))
-    mlab.mesh(x, y, z, scalars=s, colormap='seismic',
+    mlab.mesh(x, y, z, scalars=-s, colormap='seismic',
               vmin=smin, vmax=smax)
 
     mlab.view(azimuth=15.0, elevation=90.0, distance=4.2)

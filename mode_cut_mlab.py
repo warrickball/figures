@@ -32,8 +32,8 @@ if args.freq and args.enn:
 
 mlab.figure(1, bgcolor=(1, 1, 1), fgcolor=(0, 0, 0), size=(600, 600))
 mlab.clf()
-ell = 20
-emm = 16
+ell = args.ell
+emm = args.emm
 
 # ph = np.linspace(0.5*np.pi, 2.0*np.pi, 100)
 @mlab.show

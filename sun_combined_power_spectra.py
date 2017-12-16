@@ -80,9 +80,13 @@ for key in args.datasets:
             timeseries = fits.open('data/%s' % shortnames[k])[0].data
         except IOError:
             print('Downloading %s...' % shortnames[k])
-            import urllib2
-            response = urllib2.urlopen('http://irfu.cea.fr/Phocea/file.php?class=astimg&file=%s/%s' % (filenumber[k], longname[k]))
-            with open('data/%s' % shortnames[k], 'w') as f:
+            try:
+                from urllib2 import urlopen
+            except ImportError:
+                from urllib.request import urlopen
+                
+            response = urlopen('http://irfu.cea.fr/Phocea/file.php?class=astimg&file=%s/%s' % (filenumbers[k], longnames[k]))
+            with open('data/%s' % shortnames[k], 'wb') as f:
                 f.write(response.read())
             
             timeseries = fits.open('data/%s' % shortnames[k])[0].data

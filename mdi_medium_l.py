@@ -10,9 +10,13 @@ from astropy.io import fits
 try:
     data = fits.open('data/mdi_medium_l.fits')[0].data
 except IOError:
-    import urllib2
-    response = urllib2.urlopen('https://soho.nascom.nasa.gov/publications/CDROM1/papers/rhodes/lnu0.fts')
-    with open('data/mdi_medium_l.fits','w') as f:
+    try:
+        from urllib2 import urlopen
+    except ImportError:
+        from urllib.request import urlopen
+        
+    response = urlopen('https://soho.nascom.nasa.gov/publications/CDROM1/papers/rhodes/lnu0.fts')
+    with open('data/mdi_medium_l.fits','wb') as f:
         f.write(response.read())
         
     data = fits.open('data/mdi_medium_l.fits')[0].data

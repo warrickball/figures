@@ -36,9 +36,13 @@ hip_dtype = [('Catalog', '|S1'), ('HIP', int), ('Proxy', '|S1'),
 try:
     data = np.load('data/hip_main.npy')
 except IOError:
-    import urllib2
-    response = urllib2.urlopen('ftp://cdsarc.u-strasbg.fr/pub/cats/I/239/hip_main.dat.gz')
-    with open('data/hip_main.dat.gz', 'w') as f:
+    try:
+        from urllib2 import urlopen
+    except ImportError:
+        from urllib.request import urlopen
+        
+    response = urlopen('ftp://cdsarc.u-strasbg.fr/pub/cats/I/239/hip_main.dat.gz')
+    with open('data/hip_main.dat.gz', 'wb') as f:
         f.write(response.read())
 
     np.save('data/hip_main.npy', np.genfromtxt('data/hip_main.dat.gz',

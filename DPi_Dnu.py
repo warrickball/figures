@@ -16,9 +16,13 @@ data_dtype = [('KIC', int), ('Dnu', float), ('eDnu', float),
 try:
     data = np.genfromtxt('data/DPi_Dnu.dat', dtype=data_dtype, delimiter=(8,6,5,6,6,3,5,5))
 except IOError:
-    import urllib2
-    response = urllib2.urlopen('ftp://cdsarc.u-strasbg.fr/pub/cats/J/A%2BA/572/L5/table1.dat')
-    with open('data/DPi_Dnu.dat', 'w') as f:
+    try:
+        from urllib2 import urlopen
+    except ImportError:
+        from urllib.request import urlopen
+        
+    response = urlopen('ftp://cdsarc.u-strasbg.fr/pub/cats/J/A%2BA/572/L5/table1.dat')
+    with open('data/DPi_Dnu.dat', 'wb') as f:
         f.write(response.read())
 
     data = np.genfromtxt('data/DPi_Dnu.dat', dtype=data_dtype, delimiter=(8,6,5,6,6,3,5,5))

@@ -9,8 +9,12 @@ from matplotlib import pyplot as pl
 try:
     data = np.load('data/hmi_modes.npy')
 except IOError:
-    import urllib2
-    response = urllib2.urlopen('http://jsoc.stanford.edu/SUM99/D951224643/S00000/m10qr.8488')
+    try:
+        from urllib2 import urlopen
+    except ImportError:
+        from urllib.request import urlopen
+        
+    response = urlopen('http://jsoc.stanford.edu/SUM99/D951224643/S00000/m10qr.8488')
     data = np.loadtxt(response.readlines())
     np.save('data/hmi_modes.npy', data)
 

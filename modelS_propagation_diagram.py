@@ -9,9 +9,13 @@ from matplotlib import pyplot as pl
 try:
     glob, var = io.load_fgong('data/modelS.fgong')
 except IOError:
-    import urllib2
-    response = urllib2.urlopen('http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c')
-    with open('data/modelS.fgong','w') as f:
+    try:
+        from urllib2 import urlopen
+    except ImportError:
+        from urllib.request import urlopen
+        
+    response = urlopen('http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c')
+    with open('data/modelS.fgong','wb') as f:
         f.write(response.read())
 
     glob, var = io.load_fgong('data/modelS.fgong')

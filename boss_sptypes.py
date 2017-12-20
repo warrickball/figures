@@ -20,16 +20,20 @@ for i in [6,8,9]:
 try:
     data = np.load('data/boss_sptypes.npy')
 except IOError:
+    try:
+        from urllib2 import urlopen
+    except ImportError:
+        from urllib.request import urlopen
+        
     from astropy.io import fits
-    import urllib2
     data = []
     url = 'https://raw.github.com/BU-hammerTeam/PyHammer/master/resources/templates/%s.fits'
     
     for k in sptypes:
         print('Downloading spectrum for SpType %s...' % k)
-        response = urllib2.urlopen(url % k)
+        response = urlopen(url % k)
 
-        with open('data/tmp.fits','w') as f:
+        with open('data/tmp.fits','wb') as f:
             f.write(response.read())
 
         data.append(np.copy(fits.open('data/tmp.fits')[1].data))

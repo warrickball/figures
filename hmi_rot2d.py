@@ -15,16 +15,20 @@ try:
     err2d = np.load('data/hmi_err2d.npy')
     rmesh = np.load('data/hmi_rmesh.npy')
 except IOError:
-    import urllib2
-    response = urllib2.urlopen('http://jsoc.stanford.edu/SUM86/D917240671/S00000/rot.2d')
+    try:
+        from urllib2 import urlopen
+    except ImportError:
+        from urllib.request import urlopen
+        
+    response = urlopen('http://jsoc.stanford.edu/SUM86/D917240671/S00000/rot.2d')
     rot2d = np.loadtxt(response.readlines())
     np.save('data/hmi_rot2d.npy', rot2d)
 
-    response = urllib2.urlopen('http://jsoc.stanford.edu/SUM86/D917240671/S00000/err.2d')
+    response = urlopen('http://jsoc.stanford.edu/SUM86/D917240671/S00000/err.2d')
     err2d = np.loadtxt(response.readlines())
     np.save('data/hmi_err2d.npy', err2d)
 
-    response = urllib2.urlopen('http://jsoc.stanford.edu/SUM86/D917240671/S00000/rmesh.orig')
+    response = urlopen('http://jsoc.stanford.edu/SUM86/D917240671/S00000/rmesh.orig')
     rmesh = np.loadtxt(response.readlines())[::4]
     np.save('data/hmi_rmesh.npy', rmesh)
 

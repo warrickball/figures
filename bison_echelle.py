@@ -3,29 +3,31 @@
 import numpy as np
 from matplotlib import pyplot as pl
 
+def get(source, target):
+    try:
+        data = np.loadtxt(target)
+    except IOError:
+        try:
+            from urllib2 import urlopen
+        except ImportError:
+            from urllib.request import urlopen
+
+        response = urlopen(source)
+        with open(target, 'wb') as f:
+            f.write(response.read())
+
+        data = np.loadtxt(target)
+
+    return data
+
 # Davies et al. (2014), doi:http://mnrasl.oxfordjournals.org/content/396/1/L100
 # http://bison.ph.bham.ac.uk/downloads/data/davies2014.txt
 # Broomhall et al. (2009), doi:10.1007/s11207-015-0810-0
 # http://bison.ph.bham.ac.uk/downloads/data/broomhall2009.txt
-try:
-    broomhall = np.loadtxt('data/broomhall2009.txt')
-except IOError:
-    import urllib2
-    response = urllib2.urlopen('http://bison.ph.bham.ac.uk/downloads/data/broomhall2009.txt')
-    with open('data/broomhall2009.txt','w') as f:
-        f.write(response.read())
-
-    broomhall = np.loadtxt('data/broomhall2009.txt')
-    
-try:
-    davies = np.loadtxt('data/davies2014.txt')
-except IOError:
-    import urllib2
-    response = urllib2.urlopen('http://bison.ph.bham.ac.uk/downloads/data/davies2014.txt')
-    with open('data/davies2014.txt','w') as f:
-        f.write(response.read())
-
-    davies = np.loadtxt('data/davies2014.txt')
+broomhall = get('http://bison.ph.bham.ac.uk/downloads/data/broomhall2009.txt',
+                'data/broomhall2009.txt')
+davies = get('http://bison.ph.bham.ac.uk/downloads/data/davies2014.txt',
+             'data/davies2014.txt')
 
 Delta_nu = 135.1
 

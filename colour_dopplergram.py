@@ -19,8 +19,6 @@ except IOError:
     urlretrieve(source, filename)
     data = imread(filename)
 
-# data[data==0] = 120
-    
 # tips for stripping everything but image:
 # https://stackoverflow.com/a/9295367/1299112
 size = (6.0, 6.0)
@@ -31,5 +29,13 @@ ax = pl.Axes(fig, [0., 0., 1., 1.])
 ax.set_axis_off()
 fig.add_axes(ax)
 
+N = len(data)
+data = np.array(data, dtype='float')
+x = np.linspace(-1., 1., N).reshape((1,-1))
+y = np.linspace(-1., 1., N).reshape((-1,1))
+z = x**2 + y**2
+data[(data < 15) & (z > 0.88)] = np.nan  # clip edges
+data[-100:, :N//2] = np.nan  # remove watermark
 pl.imshow(data, cmap='seismic')
+# pl.savefig('colour_dopplergram.jpg', dpi=dpi, quality=80)
 pl.show()

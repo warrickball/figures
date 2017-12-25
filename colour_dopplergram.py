@@ -7,7 +7,6 @@ from scipy.ndimage import imread
 source = 'https://sdo.gsfc.nasa.gov/assets/img/browse/2017/12/15/20171215_000438_4096_HMID.jpg'
 filename = 'data/hmi_dopplergram.jpg'
 
-
 try:
     data = imread(filename)
 except IOError:

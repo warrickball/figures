@@ -8,14 +8,11 @@ def get(source, target):
         data = np.loadtxt(target)
     except IOError:
         try:
-            from urllib2 import urlopen
+            from urllib import urlretrieve
         except ImportError:
-            from urllib.request import urlopen
+            from urllib.request import urlretrieve
 
-        response = urlopen(source)
-        with open(target, 'wb') as f:
-            f.write(response.read())
-
+        urlretrieve(source, target)
         data = np.loadtxt(target)
 
     return data

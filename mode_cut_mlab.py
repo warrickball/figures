@@ -5,6 +5,7 @@ oscillation mode using Mayavi (as opposed to matplotlib).
 
 """
 
+import pyface.qt
 import numpy as np
 from matplotlib import pyplot as pl
 from mayavi import mlab

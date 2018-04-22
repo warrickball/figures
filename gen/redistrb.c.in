@@ -1,0 +1,14 @@
+2 'modelS.amdl'    @
+3 'modelS.r.amdl'    @
+-1 ''        @
+nn,icnmsh
+4800,,,  @
+icase,icvzbn,nsmth,ndisc,dlxdsc,dlgrmx,cacvzb
+,,9,60,,,,  
+24,,,,,,,,,,,,,,,,, @  
+cg,cx,ca,cdgr,cddgr,cdg,alphsf,adda4
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,  @
+nout,cn,irsu,unew,iresa4  
+30,,,,10,,,,,  @
+nmodel,kmodel,itsaml,ioldex
+,,,,,,,,,,,  @

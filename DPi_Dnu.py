@@ -9,26 +9,17 @@ from matplotlib import pyplot as pl
 # B. Mosser et al., bibcode 2012A%26A...540A.143M
 # ftp://cdsarc.u-strasbg.fr/pub/cats/J/A%2BA/540/A143
 
-data_dtype = [('KIC', int), ('Dnu', float), ('eDnu', float),
-              ('DPi', float), ('eDPi', float), ('stat', '|S3'),
-              ('M', float), ('eM', float)]
-
 try:
-    data = np.genfromtxt('data/DPi_Dnu.dat', dtype=data_dtype, delimiter=(8,6,5,6,6,3,5,5))
+    data = np.load('data/DPi_Dnu.npy')
 except IOError:
-    try:
-        from urllib2 import urlopen
-    except ImportError:
-        from urllib.request import urlopen
-        
-    response = urlopen('ftp://cdsarc.u-strasbg.fr/pub/cats/J/A%2BA/572/L5/table1.dat')
-    with open('data/DPi_Dnu.dat', 'wb') as f:
-        f.write(response.read())
+    from astropy.io import ascii
 
-    data = np.genfromtxt('data/DPi_Dnu.dat', dtype=data_dtype, delimiter=(8,6,5,6,6,3,5,5))
+    data = ascii.read('ftp://cdsarc.u-strasbg.fr/pub/cats/J/A%2BA/572/L5/table1.dat',
+                      readme='ftp://cdsarc.u-strasbg.fr/pub/cats/J/A%2BA/572/L5/ReadMe').as_array()
+    np.save('data/DPi_Dnu.npy', data)
 
-data = data[np.argsort(data['M'])]
-scat = pl.scatter(data['Dnu'], data['DPi'], c=data['M'], s=15, lw=0,
+data = data[np.argsort(data['Mass'])]
+scat = pl.scatter(data['Dnu'], data['DPi1'], c=data['Mass'], s=15, lw=0,
                   cmap=pl.cm.jet)
 ax = pl.gca()
 ax.set_xscale('log')

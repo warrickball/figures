@@ -17,18 +17,20 @@ from tomso import io
 from scipy import integrate as spint
 from argparse import ArgumentParser
 
-pl.rcParams['figure.figsize'] = 4.8, 4.8
-
 parser = ArgumentParser()
 parser.add_argument('-l', '--ell', type=int, nargs='+', default=[2, 20, 25, 75],
-                    help='angular degree(s) of the desired rays')
+                    help='angular degree(s) of the desired rays (default 2, 20, 25, 75)')
 parser.add_argument('--nu', type=float, default=3e-3,
                     help='cyclic frequency in Hz')
 parser.add_argument('--theta-right', type=float, default=0.4,
-                    help='angle to travel through clockwise, in cycles')
+                    help='angle to travel through clockwise, in cycles (default=0.4)')
 parser.add_argument('--theta-left', type=float, default=0.4,
-                    help='angle to travel through counter-clockwise, in cycles')
+                    help='angle to travel through counter-clockwise, in cycles (default=0.4)')
+parser.add_argument('--figsize', type=float, nargs=2,
+                    help="figure size, passed to rcParams['figure.figsize']")
 args = parser.parse_args()
+
+pl.rcParams['figure.figsize'] = args.figsize
 
 tau = 2.*np.pi
 th_right = args.theta_right*tau
@@ -136,12 +138,12 @@ for ell in args.ell:
     s = np.copy(s_one)
 
     for i in range(100):
-        if np.abs(th[-1]-th[0]) < th_right:
+        if np.abs(th[-1]-th[0]) < th_left:
             th = np.hstack((th, th_one-th[0]+th[-1]))
             s = np.hstack((s, s_one))
         else:
-            s = s[np.abs(th-th[0]) < th_right]
-            th = th[np.abs(th-th[0]) < th_right]
+            s = s[np.abs(th-th[0]) < th_left]
+            th = th[np.abs(th-th[0]) < th_left]
             break
     
     x = s*np.cos(th)/R

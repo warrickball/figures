@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
 import numpy as np
-from tomso import io
+from tomso import fgong
 from matplotlib import pyplot as pl
 
 # Model S can be downloaded from
 # http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c
 try:
-    glob, var = io.load_fgong('data/modelS.fgong')
+    glob, var = fgong.load_fgong('data/modelS.fgong')
 except IOError:
     try:
         from urllib2 import urlopen
@@ -18,7 +18,7 @@ except IOError:
     with open('data/modelS.fgong','wb') as f:
         f.write(response.read())
 
-    glob, var = io.load_fgong('data/modelS.fgong')
+    glob, var = fgong.load_fgong('data/modelS.fgong')
         
 M, R = glob[:2]
 r, P, rho, G1, A = var[:-1,[0,3,4,9,14]].T

@@ -11,7 +11,7 @@ from matplotlib import pyplot as pl
 from mayavi import mlab
 from scipy.special import sph_harm, lpmv, factorial
 from scipy.optimize import fsolve
-from tomso import adipls, io
+from tomso import adipls, fgong
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
@@ -50,7 +50,7 @@ def myplot():
 
     mlab.mesh(x, y, z, scalars=s, colormap='seismic')
 
-    glob, var = io.load_fgong('data/modelS.fgong')
+    glob, var = fgong.load_fgong('data/modelS.fgong')
     css, eigs = adipls.load_amde('data/modelS.amde')
     I = np.where(css['ell']==ell)[0]
     if args.freq:

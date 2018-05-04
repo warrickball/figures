@@ -4,7 +4,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as pl
 import numpy as np
 from scipy.special import sph_harm, factorial
-from tomso import adipls, io
+from tomso import adipls, fgong
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
@@ -73,7 +73,7 @@ z = np.outer(np.ones(np.size(phi)), np.cos(theta))
 a = get_colour(theta, phi)
 ax.plot_surface(x, y, z, facecolors=a, **kw)
 
-glob, var = io.load_fgong('data/modelS.fgong')
+glob, var = fgong.load_fgong('data/modelS.fgong')
 css, eigs = adipls.load_amde('data/modelS.amde')
 I = np.where(css['ell']==args.ell)[0]
 if args.freq:

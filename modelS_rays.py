@@ -13,7 +13,7 @@ intermediate values too).  Still need to
 
 import numpy as np
 from matplotlib import pyplot as pl
-from tomso import io
+from tomso import fgong
 from scipy import integrate as spint
 from argparse import ArgumentParser
 
@@ -37,7 +37,7 @@ th_left = args.theta_left*tau
 # Model S can be downloaded from
 # http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c
 try:
-    glob, var = io.load_fgong('data/modelS.fgong')
+    glob, var = fgong.load_fgong('data/modelS.fgong')
 except IOError:
     try:
         from urllib2 import urlopen
@@ -48,7 +48,7 @@ except IOError:
     with open('data/modelS.fgong','wb') as f:
         f.write(response.read())
 
-    glob, var = io.load_fgong('data/modelS.fgong')
+    glob, var = fgong.load_fgong('data/modelS.fgong')
 
 omega = args.nu*tau # angular frequency in Hz, after JCD's cover picture
     

@@ -28,9 +28,12 @@ parser.add_argument('--theta-left', type=float, default=0.4,
                     help='angle to travel through counter-clockwise, in cycles (default=0.4)')
 parser.add_argument('--figsize', type=float, nargs=2,
                     help="figure size, passed to rcParams['figure.figsize']")
+parser.add_argument('--squeeze', action='store_const', default=False,
+                    const=True, help="removes space around figure so that outer edge touches the figure border")
 args = parser.parse_args()
 
-pl.rcParams['figure.figsize'] = args.figsize
+if args.figsize:
+    pl.rcParams['figure.figsize'] = args.figsize
 
 tau = 2.*np.pi
 th_right = args.theta_right*tau
@@ -154,19 +157,21 @@ for ell in args.ell:
              color=arc.get_color(), width=0.01)
         
     # then dashed circle for inner turning point
-    th = np.linspace(0., 2.*np.pi, 100)
+    th = np.linspace(0., tau, 100)
     s_t = np.interp(0., cs2-omega**2/ell/(ell+1)*r**2, r)
     x = s_t*np.cos(th)/R
     y = s_t*np.sin(th)/R
     pl.plot(x, y, '--', color=arc.get_color())
     
-th = np.linspace(0., 2.*np.pi, 100)
+th = np.linspace(0., tau, 100)
 s = np.ones(len(th))
 x = s*np.cos(th)
 y = s*np.sin(th)
     
 pl.plot(x, y, 'k-')
-pl.subplots_adjust(top=1,bottom=0,left=0,right=1)
-pl.axis([-1.1, 1.1, -1.1, 1.1])
+if args.squeeze:
+    pl.subplots_adjust(top=1, bottom=0, left=0, right=1)
+    
+# pl.axis([-1.1, 1.1, -1.1, 1.1])
 pl.axis('off')
 pl.show()

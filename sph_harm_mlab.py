@@ -27,6 +27,8 @@ parser.add_argument('--resolution', type=float, nargs=2, default=[400,400],
                     help="resolution of image")
 parser.add_argument('--view', type=float, nargs=2, default=[45.0, 54.735610317245346],
                     help="viewing angle")
+parser.add_argument('--distance', type=float, default=5.0,
+                    help="camera distance")
 parser.add_argument('--show-nodal-lines', dest='nodal_lines', action='store_true')
 parser.add_argument('--hide-nodal-lines', dest='nodal_lines', action='store_false')
 parser.set_defaults(nodal_lines=False)
@@ -94,7 +96,7 @@ if args.nodal_lines:
         mlab.plot3d(x, y, z, **node_kw)
 
 # defaults are (45.0, 54.73561031724535, 6.744041908326433, array([0.0, 0.0, 0.0]))
-mlab.view(azimuth=args.view[0], elevation=args.view[1], distance=5.0)
+mlab.view(azimuth=args.view[0], elevation=args.view[1], distance=args.distance)
 if args.save:
     mlab.savefig(args.save)
     

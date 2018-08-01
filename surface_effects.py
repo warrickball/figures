@@ -54,24 +54,42 @@ for ell, style in enumerate(styles):
 
 for corr in args.correction:
     if corr == 'cubic':
-        X = (mdl**3/(E/err)).reshape((-1,1))
+        X = (mdl**3/(E*err)).reshape((-1,1))
         y = (obs-mdl)/err
-        a3 = np.linalg.lstsq(X, y, rcond=None)[0]
+        a3 = np.linalg.lstsq(X, y, rcond=-1)[0]
+
+        pl.plot(obs, a3*mdl**3/E)
     elif corr == 'both':
         X = np.power(mdl.reshape((-1,1)), [[-1,3]])/(E*err).reshape((-1,1))
         y = (obs-mdl)/err
-        a1, a3 = np.linalg.lstsq(X, y, rcond=None)[0]
+        a1, a3 = np.linalg.lstsq(X, y, rcond=-1)[0]
+        
+        pl.plot(obs, (a1/mdl + a3*mdl**3)/E)
     elif corr == 'sonoi':
+        numax = 3100.0
+        
         def func(z):
             return z[0]*numax*(1.-1./(1.+(mdl/numax)**z[1]))            
         
         Q = np.hstack((np.ones(sum(l==0)),
                        E[l>0]/np.interp(mdl[l>0], mdl[l==0], E[l==0])))
-        numax = 3100.0
         p = leastsq(lambda z: (func(z) + Q*(mdl-obs))-err, [-0.002, 10])[0]
 
-# a = np.array(pl.axis())
-# pl.axis([0., Delta_nu, a[2], a[3]])
+        pl.plot(obs, func(p))
+    elif corr == 'kbcd':
+        numax = 3100.0
+        I = (l == 0) & (abs(n-21) < 5)
+        
+        def func(z):
+            return z[0]*(mdl/numax)**z[1]
+
+        Q = np.hstack((np.ones(sum(l==0)),
+                       E[l>0]/np.interp(mdl[l>0], mdl[l==0], E[l==0])))
+        p = leastsq(lambda z: ((func(z) + Q*(mdl-obs))-err)[I], [-3., 5])[0]
+        print(p)
+
+        pl.plot(obs, func(p))
+
 pl.xlabel(r'frequency ($\mu$Hz)')
 pl.ylabel(r'frequency difference ($\mu$Hz)')
 pl.legend(loc=6)

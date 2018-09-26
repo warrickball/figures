@@ -41,7 +41,12 @@ parser.add_argument('-x', '--xlim', type=float, nargs=2, default=None,
                     help="Lower and upper limits for x-axis.")
 parser.add_argument('-y', '--ylim', type=float, nargs=2, default=None,
                     help="Lower and upper limits for y-axis.")
+parser.add_argument('--style-files', type=str, nargs='+', default=[],
+                    help="Read these style files, in order")
 args = parser.parse_args()
+
+for style_file in args.style_files:
+    pl.style.use(style_file)
 
 # the Fourier transforms take some time to calculate, so I do some
 # bookkeepping to make sure we only compute them once

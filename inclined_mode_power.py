@@ -43,7 +43,7 @@ y = np.vstack([multiplet(x, l, 0., w, 1., inci) for inci in inc])
 
 pl.imshow(-y, origin='lower', cmap='gray',
           extent=[-l-0.5, l+0.5, 0, 90], aspect='auto')
-pl.grid('off')
+pl.grid(False)
 # pl.xlabel(r'$(\nu-\nu_\mathrm{mode})/\delta\nu_\mathrm{splitting}$')
 pl.xlabel('frequency shift / rotation frequency')
 pl.ylabel(r'inclination ($^\circ$)')

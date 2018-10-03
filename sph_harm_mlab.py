@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import numpy as np
-from PIL import Image
 from mayavi import mlab
 from scipy.special import sph_harm, lpmv
 from scipy.optimize import fsolve

@@ -23,5 +23,5 @@ kwargs = {'aspect':'auto',
 pl.imshow(np.log10(data), **kwargs)
 pl.xlabel(r'angular degree $\ell$')
 pl.ylabel(r'frequency (mHz)')
-pl.grid('off')
+pl.grid(False)
 pl.show()

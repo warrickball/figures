@@ -2,7 +2,6 @@
 
 import numpy as np
 from matplotlib import pyplot as pl
-from scipy.ndimage import imread
 from argparse import ArgumentParser
 
 parser = ArgumentParser(description="""
@@ -13,7 +12,7 @@ args = parser.parse_args()
 
 def load(source, filename):
     try:
-        data = imread(filename)
+        data = pl.imread(filename)
     except IOError:
         try:
             from urllib import urlretrieve
@@ -21,7 +20,7 @@ def load(source, filename):
             from urllib.request import urlretrieve
 
         urlretrieve(source, filename)
-        data = imread(filename)
+        data = pl.imread(filename)
 
     return data.astype('float')
 

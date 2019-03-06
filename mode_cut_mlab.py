@@ -7,7 +7,6 @@ oscillation mode using Mayavi (as opposed to matplotlib).
 
 import pyface.qt
 import numpy as np
-from matplotlib import pyplot as pl
 from mayavi import mlab
 from scipy.special import sph_harm, lpmv, factorial
 from scipy.optimize import fsolve
@@ -20,16 +19,22 @@ parser.add_argument('-l', '--ell', type=int, default=20,
 parser.add_argument('-m', '--emm', type=int, default=16,
                     help="Azimuthal order m (default m=16)")
 parser.add_argument('-n', '--enn', type=int, default=None,
-                    help="""Radial order n.  You can only choose one of this or the cyclic
-                    frequency n (-f, --freq).  (default n=14)""")
+                    help="Radial order n.  You can only choose one of this "
+                    "or the cyclic frequency n (-f, --freq).  (default n=14)")
 parser.add_argument('-f', '--freq', type=float, default=None,
-                    help="""Cyclic frequency in mHz.  You can only choose one of this or the
-                    radial order n (-n, --enn).""")
+                    help="Cyclic frequency in mHz.  You can only choose one "
+                    "of this or the radial order n (-n, --enn).")
+parser.add_argument('-o', '--output', type=str, default=None,
+                    help="save figure to given filename without displaying "
+                    "it (forces software rendering)")
 args = parser.parse_args()
 
 if args.freq and args.enn:
         raise ValueError("""you can only use one of the radial order (-n,
         --enn) or the cyclic frequency (-f, --freq)""")
+
+if args.output:
+        mlab.options.offscreen = True
 
 mlab.figure(1, bgcolor=(1, 1, 1), fgcolor=(0, 0, 0), size=(600, 600))
 mlab.clf()
@@ -94,3 +99,6 @@ def myplot():
     mlab.view(azimuth=15.0, elevation=90.0, distance=4.2)
 
 myplot()
+if args.output:
+        mlab.savefig(args.output)
+

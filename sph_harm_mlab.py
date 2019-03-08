@@ -28,6 +28,9 @@ parser.add_argument('--view', type=float, nargs=2, default=[45.0, 54.73561031724
                     help="viewing angle")
 parser.add_argument('--distance', type=float, default=5.0,
                     help="camera distance")
+parser.add_argument('--bgcolor', type=float, nargs=3, default=[1,1,1],
+                    help="background colour, as [0..1] RGB values "
+                    "(default=1,1,1)")
 parser.add_argument('--show-nodal-lines', dest='nodal_lines', action='store_true')
 parser.add_argument('--hide-nodal-lines', dest='nodal_lines', action='store_false')
 parser.set_defaults(nodal_lines=False)
@@ -41,7 +44,7 @@ th = np.linspace(0., pi, args.Ntheta)
 ph = np.linspace(-pi, pi, args.Nphi)
 Th, Ph = np.meshgrid(th, ph)
 
-mlab.figure(1, bgcolor=(1, 1, 1), fgcolor=(0, 0, 0), size=args.resolution)
+mlab.figure(1, bgcolor=tuple(args.bgcolor), fgcolor=(0, 0, 0), size=args.resolution)
 mlab.clf()
 x = sin(Th)*cos(Ph)
 y = sin(Th)*sin(Ph)

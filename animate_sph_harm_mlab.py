@@ -30,6 +30,9 @@ parser.add_argument('--resolution', type=float, nargs=2, default=[400,400],
                     help="resolution of image")
 parser.add_argument('--view', type=float, nargs=2, default=[45.0, 54.735610317245346],
                     help="viewing angle")
+parser.add_argument('--bgcolor', type=float, nargs=3, default=[1,1,1],
+                    help="background colour, as [0..1] RGB values "
+                    "(default=1,1,1)")
 parser.add_argument('--show-nodal-lines', dest='nodal_lines', action='store_true')
 parser.add_argument('--hide-nodal-lines', dest='nodal_lines', action='store_false')
 parser.set_defaults(nodal_lines=False)
@@ -51,7 +54,7 @@ y = sin(Th)*sin(Ph)
 z = cos(Th)
 s = sph_harm(emm, ell, Ph, Th).real
 
-mlab.figure(1, bgcolor=(1, 1, 1), fgcolor=(0, 0, 0), size=args.resolution)
+mlab.figure(1, bgcolor=tuple(args.bgcolor), fgcolor=(0, 0, 0), size=args.resolution)
 mlab.clf()
 x = sin(Th)*cos(Ph)
 y = sin(Th)*sin(Ph)

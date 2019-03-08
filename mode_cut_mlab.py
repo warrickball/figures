@@ -27,6 +27,9 @@ parser.add_argument('-f', '--freq', type=float, default=None,
 parser.add_argument('-o', '--output', type=str, default=None,
                     help="save figure to given filename without displaying "
                     "it (forces software rendering)")
+parser.add_argument('--bgcolor', type=float, nargs=3, default=[1,1,1],
+                    help="background colour, as [0..1] RGB values "
+                    "(default=1,1,1)")
 args = parser.parse_args()
 
 if args.freq and args.enn:
@@ -36,7 +39,7 @@ if args.freq and args.enn:
 if args.output:
         mlab.options.offscreen = True
 
-mlab.figure(1, bgcolor=(1, 1, 1), fgcolor=(0, 0, 0), size=(600, 600))
+mlab.figure(1, bgcolor=tuple(args.bgcolor), fgcolor=(0, 0, 0), size=(600, 600))
 mlab.clf()
 ell = args.ell
 emm = args.emm
@@ -100,5 +103,5 @@ def myplot():
 
 myplot()
 if args.output:
-        mlab.savefig(args.output)
+    mlab.savefig(args.output)
 

@@ -22,8 +22,8 @@ parser.add_argument('--figsize', type=float, nargs=2,
                     help="figure size, passed to rcParams['figure.figsize']")
 parser.add_argument('--levels', type=int, default=100,
                     help="number of levels passed to contourf (default 100)")
-parser.add_argument('--squeeze', action='store_const', default=False,
-                    const=True, help="removes space around figure so that outer edge touches the figure border")
+parser.add_argument('--padding', type=float, default=0.01,
+                    help="fractional padding between edge and circle (default=0.01")
 args = parser.parse_args()
 
 if args.figsize:
@@ -70,8 +70,8 @@ amax = np.max(np.abs(a))
 grid = np.meshgrid(theta, r)
 
 ax = pl.subplot(111, projection='polar')
-if args.squeeze:
-    pl.subplots_adjust(top=1, bottom=0, left=0, right=1)
+b = args.padding
+pl.subplots_adjust(top=1-b, bottom=b, left=b, right=1-b)
 
 ax.contourf(grid[0], grid[1], a, args.levels, cmap='seismic',
             vmin=-amax, vmax=amax)

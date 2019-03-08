@@ -11,8 +11,7 @@ parser.add_argument('-n', type=int, default=2,
 parser.add_argument('-m', type=int, default=3,
                     help="angular/azimuthal order (default=3)")
 parser.add_argument('--figsize', type=float, nargs=2,
-                    help="figure size, passed to rcParams['figure.figsize'] "
-                    "(you probably want to make it square)")
+                    help="figure size, passed to rcParams['figure.figsize']")
 parser.add_argument('--levels', type=int, default=100,
                     help="number of levels passed to contourf (default 100)")
 parser.add_argument('--padding', type=float, default=0.01,
@@ -35,9 +34,7 @@ n = args.n # radial order (order of zero of bessel function)
 m = args.m # angular order
 k = jn_zeros(m, n+1)[n]
 
-# r = np.linspace(0., 1., 51)
-# th = np.linspace(0., 2.*np.pi, 51)
-r, th = np.mgrid[0:1:101j, 0:1:101j]
+r, th = np.mgrid[0:1:201j, 0:1:201j]
 th = th*TAU
 
 x = r*np.cos(th)
@@ -49,28 +46,26 @@ if n > 0:
 else:
     z = jn(m, k[n]*r)
 
-scale = np.max(np.abs(z))
+zmax = np.max(np.abs(z))
+
 pl.clf()
-pl.subplots_adjust(0, 0, 1, 1)
-pl.contourf(x, y, z, levels=args.levels, cmap='seismic',
-            vmin=-scale, vmax=scale)
+ax = pl.subplot(111, projection='polar')
+b = args.padding
+pl.subplots_adjust(top=1-b, bottom=b, left=b, right=1-b)
+ax.contourf(th, r, z, levels=args.levels, cmap='seismic',
+            vmin=-zmax, vmax=zmax)
 
 th = np.linspace(0, TAU, 1001)
-x = np.cos(th)
-y = np.sin(th)
-pl.plot(x, y, 'k-')
-
 for ki in k[:-1]:
-    r = ki/k[n]
-    pl.plot(r*x, r*y, 'k--')
+    r = ki/k[n]*np.ones_like(th)
+    pl.plot(th, r, 'k--')
 
-r = np.linspace(-1, 1, 101)
+r = np.linspace(0, 1, 101)
 th = TAU/2/m if n > 0 else 0.
 for i in range(m):
-    pl.plot(r*np.cos(i*th), r*np.sin(i*th), 'k--')
+    pl.plot(i*th*np.ones_like(r), r, 'k--')
+    pl.plot(i*th*np.ones_like(r) + TAU/2, r, 'k--')
 
-b = 1.0 + args.padding
-pl.axis([-b, b, -b, b])
-pl.axis('off')
-
+ax.set_xticklabels([])
+ax.set_yticklabels([])
 pl.show()

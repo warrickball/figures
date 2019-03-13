@@ -2,6 +2,7 @@
 
 import numpy as np
 from matplotlib import pyplot as pl
+from argparse import ArgumentParser
 
 from matplotlib.projections import PolarAxes
 from mpl_toolkits.axisartist import floating_axes
@@ -9,6 +10,22 @@ from mpl_toolkits.axisartist.grid_finder import (FixedLocator, MaxNLocator,
                                                  DictFormatter)
 # data from SDO/HMI webpage
 # http://jsoc.stanford.edu/HMI/Global_products.html
+
+parser = ArgumentParser()
+parser.add_argument('-o', '--output', type=str,
+                    help="save plot to file")
+parser.add_argument('--dpi', type=float,
+                    help="resolution in DPI for saved image, passed to "
+                    "rcParams['figure.dpi']")
+parser.add_argument('--figsize', type=float, nargs=2,
+                    help="figure size, passed to rcParams['figure.figsize']")
+args = parser.parse_args()
+
+if args.figsize:
+    pl.rcParams['figure.figsize'] = args.figsize
+
+if args.dpi:
+    pl.rcParams['figure.dpi'] = args.dpi
 
 try:
     rot2d = np.load('data/hmi_rot2d.npy')
@@ -84,4 +101,7 @@ th = np.linspace(0., np.pi/2, 101)
 r = np.ones(len(th))*0.713
 aux_ax.plot(th, r, 'k--')
 
-pl.show()
+if args.output:
+    pl.savefig(args.output)
+else:
+    pl.show()

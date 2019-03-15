@@ -8,7 +8,8 @@ import cartopy.crs as ccrs
 coords = {'Mount Wilson': (34.22, -118.07),
           'Las Campanas': (-29.01597, -70.69208),
           'Teide Observatory': (28.3, -16.5097),
-          'SAAO': (-33.9347, 18.4776),
+          # 'SAAO': (-33.9347, 18.4776),
+          'Sutherland': (-32.376006, 20.810678),
           'Carnarvon': (-24.869167, 113.704722),
           'Paul Wild Observatory': (-30.314, 149.562),
           'University of Birmingham': (52.450556, -1.930556)}

@@ -16,6 +16,8 @@ parser.add_argument('--levels', type=int, default=100,
                     help="number of levels passed to contourf (default 100)")
 parser.add_argument('--padding', type=float, default=0.01,
                     help="fractional padding between edge and circle (default=0.01")
+parser.add_argument('-o', '--output', type=str,
+                    help="save plot to file")
 args = parser.parse_args()
 
 if args.figsize:
@@ -41,7 +43,7 @@ x = r*np.cos(th)
 y = r*np.sin(th)
 
 k = jn_zeros(m, n+1)
-if n > 0:
+if m > 0:
     z = jn(m, k[n]*r)*np.sin(m*th)
 else:
     z = jn(m, k[n]*r)
@@ -61,11 +63,15 @@ for ki in k[:-1]:
     pl.plot(th, r, 'k--')
 
 r = np.linspace(0, 1, 101)
-th = TAU/2/m if n > 0 else 0.
+th = TAU/2/m if m > 0 else 0.
 for i in range(m):
     pl.plot(i*th*np.ones_like(r), r, 'k--')
     pl.plot(i*th*np.ones_like(r) + TAU/2, r, 'k--')
 
 ax.set_xticklabels([])
 ax.set_yticklabels([])
-pl.show()
+
+if args.output:
+    pl.savefig(args.output)
+else:
+    pl.show()

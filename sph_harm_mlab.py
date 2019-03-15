@@ -14,8 +14,9 @@ parser.add_argument('-l', '--ell', type=int, default=6,
                     help="angular degree")
 parser.add_argument('-m', '--emm', type=int, default=3,
                     help="azimuthal order")
-parser.add_argument('--save', type=str, default=None,
-                    help="save plot to this file")
+parser.add_argument('-o', '--output', type=str, default=None,
+                    help="save figure to given filename without displaying "
+                    "it (forces software rendering)")
 parser.add_argument('--Ntheta', type=int, default=101,
                     help="number of points in theta (latitude)")
 parser.add_argument('--Nphi', type=int, default=101,
@@ -35,6 +36,9 @@ parser.add_argument('--show-nodal-lines', dest='nodal_lines', action='store_true
 parser.add_argument('--hide-nodal-lines', dest='nodal_lines', action='store_false')
 parser.set_defaults(nodal_lines=False)
 args = parser.parse_args()
+
+if args.output:
+    mlab.options.offscreen = True
 
 ell = args.ell
 emm = args.emm
@@ -99,7 +103,6 @@ if args.nodal_lines:
 
 # defaults are (45.0, 54.73561031724535, 6.744041908326433, array([0.0, 0.0, 0.0]))
 mlab.view(azimuth=args.view[0], elevation=args.view[1], distance=args.distance)
-if args.save:
-    mlab.savefig(args.save)
-    
 mlab.show()
+if args.output:
+    mlab.savefig(args.output)

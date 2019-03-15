@@ -14,8 +14,9 @@ parser.add_argument('-l', '--ell', type=int, default=6,
                     help="angular degree")
 parser.add_argument('-m', '--emm', type=int, default=3,
                     help="azimuthal order")
-parser.add_argument('--save', type=str, default=None,
-                    help="save animation to this file")
+parser.add_argument('-o', '--output', type=str, default=None,
+                    help="save figure to given filename without displaying "
+                    "it (forces software rendering)")
 parser.add_argument('--Ntheta', type=int, default=101,
                     help="number of points in theta (latitude)")
 parser.add_argument('--Nphi', type=int, default=101,
@@ -29,7 +30,7 @@ parser.add_argument('--Nframes', type=int, default=40,
 parser.add_argument('--resolution', type=float, nargs=2, default=[400,400],
                     help="resolution of image")
 parser.add_argument('--view', type=float, nargs=2, default=[45.0, 54.735610317245346],
-                    help="viewing angle")
+                    help="viewing angle (default=45.0, 54.74)")
 parser.add_argument('--bgcolor', type=float, nargs=3, default=[1,1,1],
                     help="background colour, as [0..1] RGB values "
                     "(default=1,1,1)")
@@ -38,6 +39,9 @@ parser.add_argument('--hide-nodal-lines', dest='nodal_lines', action='store_fals
 parser.set_defaults(nodal_lines=False)
 args = parser.parse_args()
 
+if args.output:
+    mlab.options.offscreen = True
+        
 Nframes = args.Nframes
 interval = int(args.period/Nframes*1000.)  # in milliseconds?
 dphase = 2.*pi/Nframes
@@ -131,7 +135,7 @@ def save_frame(filename, phase):
 # # mlab.show()
 # write_gif(dataset, 'sph_harm.gif')
 # save = True
-if args.save:
+if args.output:
     from subprocess import call
     phases = np.linspace(0., 2.*np.pi, Nframes+1)[:-1]
     for i, phase in enumerate(phases):
@@ -141,7 +145,7 @@ if args.save:
     call(['convert', '-loop', '0',
           '-layers', 'Optimize',
           '-delay', delay,
-          'tmp/frame_*.png', args.save])
+          'tmp/frame_*.png', args.output])
 
     # cleanup
     for i in range(len(phases)):
@@ -164,4 +168,3 @@ def anim():
         yield
 
 anim()
-

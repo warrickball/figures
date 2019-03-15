@@ -27,6 +27,8 @@ parser.add_argument('-f', '--freq', type=float, default=None,
 parser.add_argument('-o', '--output', type=str, default=None,
                     help="save figure to given filename without displaying "
                     "it (forces software rendering)")
+parser.add_argument('--view', type=float, nargs=2, default=[15.0, 90.0],
+                    help="viewing angle (default=[15.0, 90.0])")
 parser.add_argument('--bgcolor', type=float, nargs=3, default=[1,1,1],
                     help="background colour, as [0..1] RGB values "
                     "(default=1,1,1)")
@@ -99,7 +101,7 @@ def myplot():
     mlab.mesh(x, y, z, scalars=-s, colormap='seismic',
               vmin=smin, vmax=smax)
 
-    mlab.view(azimuth=15.0, elevation=90.0, distance=4.2)
+    mlab.view(azimuth=args.view[0], elevation=args.view[1], distance=4.2)
 
 myplot()
 if args.output:

@@ -18,6 +18,8 @@ parser.add_argument('-n', '--enn', type=int, default=None,
 parser.add_argument('-f', '--freq', type=float, default=None,
                     help="""Cyclic frequency in mHz.  You can only choose one of this or the
                     radial order n (-n, --enn).""")
+parser.add_argument('-o', '--output', type=str,
+                    help="save figure to file instead of plotting")
 parser.add_argument('--figsize', type=float, nargs=2,
                     help="figure size, passed to rcParams['figure.figsize']")
 parser.add_argument('--levels', type=int, default=100,
@@ -77,4 +79,8 @@ ax.contourf(grid[0], grid[1], a, args.levels, cmap='seismic',
             vmin=-amax, vmax=amax)
 ax.set_xticklabels([])
 ax.set_yticklabels([])
-pl.show()
+
+if args.output:
+    pl.savefig(args.output)
+else:
+    pl.show()

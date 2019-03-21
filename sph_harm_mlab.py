@@ -32,6 +32,8 @@ parser.add_argument('--distance', type=float, default=5.0,
 parser.add_argument('--bgcolor', type=float, nargs=3, default=[1,1,1],
                     help="background colour, as [0..1] RGB values "
                     "(default=1,1,1)")
+parser.add_argument('--colormap', type=str, default='seismic',
+                    help="choice of colormap (default='seismic')")
 parser.add_argument('--show-nodal-lines', dest='nodal_lines', action='store_true')
 parser.add_argument('--hide-nodal-lines', dest='nodal_lines', action='store_false')
 parser.set_defaults(nodal_lines=False)
@@ -54,7 +56,7 @@ x = sin(Th)*cos(Ph)
 y = sin(Th)*sin(Ph)
 z = cos(Th)
 s = sph_harm(emm,ell,Ph,Th).real
-m = mlab.mesh(x, y, z, scalars=s, colormap='seismic')
+m = mlab.mesh(x, y, z, scalars=s, colormap=args.colormap)
 
 # plot nodal lines
 if args.nodal_lines:

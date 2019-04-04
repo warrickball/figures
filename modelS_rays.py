@@ -20,16 +20,19 @@ from argparse import ArgumentParser
 parser = ArgumentParser()
 parser.add_argument('-l', '--ell', type=int, nargs='+', default=[2, 20, 25, 75],
                     help='angular degree(s) of the desired rays (default 2, 20, 25, 75)')
-parser.add_argument('--nu', type=float, default=3e-3,
-                    help='cyclic frequency in Hz')
+parser.add_argument('-f', '--freq', type=float, default=3.0,
+                    help="cyclic frequency in mHz (default=3.0, as in cover of "
+                    "JCD's notes")
+parser.add_argument('-o', '--output', type=str,
+                    help="save figure to file instead of plotting")
 parser.add_argument('--theta-right', type=float, default=0.4,
                     help='angle to travel through clockwise, in cycles (default=0.4)')
 parser.add_argument('--theta-left', type=float, default=0.4,
                     help='angle to travel through counter-clockwise, in cycles (default=0.4)')
 parser.add_argument('--figsize', type=float, nargs=2,
                     help="figure size, passed to rcParams['figure.figsize']")
-parser.add_argument('--squeeze', action='store_const', default=False,
-                    const=True, help="removes space around figure so that outer edge touches the figure border")
+parser.add_argument('--padding', type=float, default=0.01,
+                    help="fractional padding between edge and circle (default=0.01")
 args = parser.parse_args()
 
 if args.figsize:
@@ -55,7 +58,7 @@ except IOError:
 
     glob, var = fgong.load_fgong('data/modelS.fgong')
 
-omega = args.nu*tau # angular frequency in Hz, after JCD's cover picture
+omega = args.freq*tau*1e-3
     
 M,R = glob[:2]
 r,P,rho,G1,A = var[:-1,[0,3,4,9,14]].T
@@ -169,9 +172,11 @@ x = s*np.cos(th)
 y = s*np.sin(th)
     
 pl.plot(x, y, 'k-')
-if args.squeeze:
-    pl.subplots_adjust(top=1, bottom=0, left=0, right=1)
-    
-# pl.axis([-1.1, 1.1, -1.1, 1.1])
+b = args.padding
+pl.subplots_adjust(top=1-b, bottom=b, left=b, right=1-b)
 pl.axis('off')
-pl.show()
+
+if args.output:
+    pl.savefig(args.output)
+else:
+    pl.show()

@@ -15,7 +15,7 @@ parser.add_argument('--figsize', type=float, nargs=2,
 parser.add_argument('--levels', type=int, default=100,
                     help="number of levels passed to contourf (default 100)")
 parser.add_argument('--padding', type=float, default=0.01,
-                    help="fractional padding between edge and circle (default=0.01")
+                    help="fractional padding between edge and circle (default=0.01)")
 parser.add_argument('-o', '--output', type=str,
                     help="save plot to file")
 args = parser.parse_args()

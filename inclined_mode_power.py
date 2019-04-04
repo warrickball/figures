@@ -5,12 +5,12 @@ from matplotlib import pyplot as pl
 from scipy.special import lpmn
 from argparse import ArgumentParser
 
-parser = ArgumentParser(description="""Creates 2D plots of power in an oscillation mode multiplet, as in
-Gizon & Solanki (2003).""")
+parser = ArgumentParser(description="Creates 2D plots of power in an oscillation "
+                        "mode multiplet, as in Gizon & Solanki (2003).")
 parser.add_argument('-l', '--ell', type=int, default=2,
-                    help="angular degree")
+                    help="angular degree (default=2)")
 parser.add_argument('-w', '--width', type=float, default=0.2,
-                    help="linewidth")
+                    help="linewidth (default=0.2)")
 args = parser.parse_args()
 
 def factorial(n):

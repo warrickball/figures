@@ -16,9 +16,10 @@ https://www.astro.ru.nl/~onnop/education/stev_utrecht_notes/""")
 
 parser.add_argument('-T', '--temperature', type=float, nargs='+',
                     default=[2e6, 2e7],
-                    help="list of temperatures, in kelvin")
+                    help="list of temperatures, in kelvin "
+                    "(default=[2e6, 2e7])")
 parser.add_argument('-n', '--density', type=float, default=6e27,
-                    help="number density, in units of cm^{-3}")
+                    help="number density, in units of cm^{-3} (default=6e27)")
 args = parser.parse_args()
 
 h = 6.626069e-27

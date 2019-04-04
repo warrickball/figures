@@ -26,9 +26,9 @@ parser.add_argument('datasets', type=str, nargs='+',
                     help="List of datasets to be plotted.  Options are " + \
                     "'golf', 'spm_red,' 'spm_green' or 'spm_blue'.")
 parser.add_argument('-s','--smoothing', type=int, default=20,
-                    help="Number of points for boxcar smoothing.")
+                    help="Number of points for boxcar smoothing. (default=20)")
 parser.add_argument('-a','--alpha', type=float, default=1.0,
-                    help="Opacity (transparent=0.0, opaque=1.0).")
+                    help="Opacity: transparent=0.0, opaque=1.0 (default=1.0).")
 parser.add_argument('--legend', action='store_const', const=True,
                     default=False, help="Add a legend to the plot.")
 parser.add_argument('--grid', action='store_const', const=True,

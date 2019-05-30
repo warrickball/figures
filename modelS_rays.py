@@ -19,19 +19,19 @@ from argparse import ArgumentParser
 
 parser = ArgumentParser()
 parser.add_argument('-l', '--ell', type=int, nargs='+', default=[2, 20, 25, 75],
-                    help='angular degree(s) of the desired rays "
-                    "(default 2, 20, 25, 75)')
+                    help="angular degree(s) of the desired rays "
+                    "(default 2, 20, 25, 75)")
 parser.add_argument('-f', '--freq', type=float, default=3.0,
                     help="cyclic frequency in mHz (default=3.0, as in cover of "
                     "JCD's notes")
 parser.add_argument('-o', '--output', type=str,
                     help="save figure to file instead of plotting")
 parser.add_argument('--theta-right', type=float, default=0.4,
-                    help='angle to travel through clockwise, in cycles "
-                    "(default=0.4)')
+                    help="angle to travel through clockwise, in cycles "
+                    "(default=0.4)")
 parser.add_argument('--theta-left', type=float, default=0.4,
-                    help='angle to travel through counter-clockwise, in cycles "
-                    "(default=0.4)')
+                    help="angle to travel through counter-clockwise, in cycles "
+                    "(default=0.4)")
 parser.add_argument('--figsize', type=float, nargs=2,
                     help="figure size, passed to rcParams['figure.figsize']")
 parser.add_argument('--padding', type=float, default=0.01,

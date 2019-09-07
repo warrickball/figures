@@ -60,6 +60,8 @@ except IOError:
     with open('data/modelS.fgong','wb') as f:
         f.write(response.read())
 
+    response.close()
+
     glob, var = fgong.load_fgong('data/modelS.fgong')
 
 omega = args.freq*tau*1e-3

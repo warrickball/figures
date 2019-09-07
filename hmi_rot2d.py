@@ -39,14 +39,17 @@ except IOError:
         
     response = urlopen('http://jsoc.stanford.edu/SUM86/D917240671/S00000/rot.2d')
     rot2d = np.loadtxt(response.readlines())
+    response.close()
     np.save('data/hmi_rot2d.npy', rot2d)
 
     response = urlopen('http://jsoc.stanford.edu/SUM86/D917240671/S00000/err.2d')
     err2d = np.loadtxt(response.readlines())
+    response.close()
     np.save('data/hmi_err2d.npy', err2d)
 
     response = urlopen('http://jsoc.stanford.edu/SUM86/D917240671/S00000/rmesh.orig')
     rmesh = np.loadtxt(response.readlines())[::4]
+    response.close()
     np.save('data/hmi_rmesh.npy', rmesh)
 
 # rot2d has 49 columns, latitudes are 90-i*15/8; i starts at 0

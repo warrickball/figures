@@ -93,6 +93,8 @@ for key in args.datasets:
             response = urlopen('http://irfu.cea.fr/Phocea/file.php?class=astimg&file=%s/%s' % (filenumbers[k], longnames[k]))
             with open('data/%s' % shortnames[k], 'wb') as f:
                 f.write(response.read())
+
+            response.close()
             
             timeseries = fits.open('data/%s' % shortnames[k])[0].data
 

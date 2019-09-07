@@ -27,10 +27,9 @@ except IOError:
     with open(filename, 'wb') as f:
         f.write(response.read())
 
-    data = np.genfromtxt(filename, dtype=dtype, delimiter=delimiter, skip_header=39)
+    response.close()
 
-print(data)
-print(data.dtype)
+    data = np.genfromtxt(filename, dtype=dtype, delimiter=delimiter, skip_header=39)
 
 pl.plot(data['Z'][1:], data['B'][1:]/1e3, 'o') # 1st element is the neutron
 pl.xlabel('atomic number')

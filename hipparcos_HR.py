@@ -45,6 +45,8 @@ except IOError:
     with open('data/hip_main.dat.gz', 'wb') as f:
         f.write(response.read())
 
+    resonse.close()
+
     np.save('data/hip_main.npy', np.genfromtxt('data/hip_main.dat.gz',
                                                delimiter='|',
                                                dtype=hip_dtype))

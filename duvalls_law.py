@@ -16,6 +16,7 @@ except IOError:
         
     response = urlopen('http://jsoc.stanford.edu/SUM99/D951224643/S00000/m10qr.8488')
     data = np.loadtxt(response.readlines())
+    response.close()
     np.save('data/hmi_modes.npy', data)
 
 l, n, obs, err = data[:,[0,1,2,7]].T

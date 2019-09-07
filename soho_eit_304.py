@@ -21,6 +21,8 @@ except IOError:
     with open(datafile, 'wb') as f:
         f.write(response.read())
 
+    response.close()
+
     data = fits.open(datafile)[0].data
 
 # tips for stripping everything but image:

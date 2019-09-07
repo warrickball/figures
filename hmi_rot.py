@@ -22,14 +22,17 @@ except IOError:
         
     response = urlopen('http://jsoc.stanford.edu/SUM86/D917240671/S00000/rot.2d')
     rot2d = np.loadtxt(response.readlines())
+    response.close()
     np.save('data/hmi_rot2d.npy', rot2d)
 
     response = urlopen('http://jsoc.stanford.edu/SUM86/D917240671/S00000/err.2d')
     err2d = np.loadtxt(response.readlines())
+    response.close()
     np.save('data/hmi_err2d.npy', err2d)
 
     response = urlopen('http://jsoc.stanford.edu/SUM86/D917240671/S00000/rmesh.orig')
     rmesh = np.loadtxt(response.readlines())[::4]
+    response.close()
     np.save('data/hmi_rmesh.npy', rmesh)
 
 incs = np.array([90.0-i*15./8. for i in range(len(rot2d[0]))])

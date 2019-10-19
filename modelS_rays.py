@@ -42,9 +42,9 @@ args = parser.parse_args()
 if args.figsize:
     pl.rcParams['figure.figsize'] = args.figsize
 
-tau = 2.*np.pi
-th_right = args.theta_right*tau
-th_left = args.theta_left*tau
+TAU = 2.*np.pi
+th_right = args.theta_right*TAU
+th_left = args.theta_left*TAU
 
 # Model S can be downloaded from
 # http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c
@@ -64,12 +64,12 @@ except IOError:
 
     S = fgong.load_fgong('data/modelS.fgong', G=6.67232e-8, return_object=True)
 
-omega = args.freq*tau*1e-3
+omega = args.freq*TAU*1e-3
 
 omega_AC2 = S.cs2/4./S.Hp**2
 
 t = np.linspace(0., 10000., 100000)/S.R
-x0 = [0.9995*S.R, tau/4.]
+x0 = [0.9995*S.R, TAU/4.]
 
 for ell in args.ell:
     k_h = np.sqrt(1.0*ell*(ell+1))/S.r
@@ -156,13 +156,13 @@ for ell in args.ell:
              color=arc.get_color(), width=0.01)
         
     # then dashed circle for inner turning point
-    th = np.linspace(0., tau, 100)
+    th = np.linspace(0., TAU, 100)
     s_t = np.interp(0., S.cs2-omega**2/ell/(ell+1)*S.r**2, S.r)
     x = s_t*np.cos(th)/S.R
     y = s_t*np.sin(th)/S.R
     pl.plot(x, y, '--', color=arc.get_color())
     
-th = np.linspace(0., tau, 100)
+th = np.linspace(0., TAU, 100)
 s = np.ones(len(th))
 x = s*np.cos(th)
 y = s*np.sin(th)

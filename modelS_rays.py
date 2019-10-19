@@ -49,7 +49,7 @@ th_left = args.theta_left*tau
 # Model S can be downloaded from
 # http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c
 try:
-    glob, var = fgong.load_fgong('data/modelS.fgong')
+    S = fgong.load_fgong('data/modelS.fgong', G=6.67232e-8, return_object=True)
 except IOError:
     try:
         from urllib2 import urlopen
@@ -62,33 +62,23 @@ except IOError:
 
     response.close()
 
-    glob, var = fgong.load_fgong('data/modelS.fgong')
+    S = fgong.load_fgong('data/modelS.fgong', G=6.67232e-8, return_object=True)
 
 omega = args.freq*tau*1e-3
-    
-M,R = glob[:2]
-r,P,rho,G1,A = var[:-1,[0,3,4,9,14]].T
-m = M*np.exp(var[:-1,1])
-cs2 = G1*P/rho
 
-G = 6.67232e-8
-g = G*m/r**2
-Hp = P/rho/g
+omega_AC2 = S.cs2/4./S.Hp**2
 
-omega_BV2 = A*g/r
-omega_AC2 = cs2/4./Hp**2
-
-t = np.linspace(0., 10000., 100000)/R
-x0 = [0.9995*R, tau/4.]
+t = np.linspace(0., 10000., 100000)/S.R
+x0 = [0.9995*S.R, tau/4.]
 
 for ell in args.ell:
-    k_h = np.sqrt(1.0*ell*(ell+1))/r
-    k_r2 = (omega**2-omega_AC2)/cs2 - k_h**2*(1.-omega_BV2/omega**2)
+    k_h = np.sqrt(1.0*ell*(ell+1))/S.r
+    k_r2 = (omega**2-omega_AC2)/S.cs2 - k_h**2*(1.-S.N2/omega**2)
     k_r = np.sqrt(k_r2)
 
-    v_gr = k_r*omega**3*cs2/(omega**4-k_h**2*cs2*omega_BV2)  # dlnr
-    v_gh = k_h*omega*cs2*(omega**2-omega_BV2)/(omega**4-k_h**2*cs2*omega_BV2)  # dtheta
-    v_gr_k_r = k_r2*omega**3*cs2/(omega**4-k_h**2*cs2*omega_BV2)
+    v_gr = k_r*omega**3*S.cs2/(omega**4-k_h**2*S.cs2*S.N2)  # dlnr
+    v_gh = k_h*omega*S.cs2*(omega**2-S.N2)/(omega**4-k_h**2*S.cs2*S.N2)  # dtheta
+    v_gr_k_r = k_r2*omega**3*S.cs2/(omega**4-k_h**2*S.cs2*S.N2)
 
     # I = (np.isfinite(v_gr*v_gh))
     # v_gr = v_gr[I]
@@ -99,9 +89,9 @@ for ell in args.ell:
     def v(x, t, sign=(-1,-1)):
         ri, thi = x
         # return [sign[0]*ri*np.interp(ri, r[::-1], v_gr[::-1], left=np.nan, right=np.nan),
-        return [sign[0]*ri*np.interp(ri, r[::-1], v_gr_k_r[::-1], left=np.nan, right=np.nan) \
-                /np.sqrt(np.interp(ri, r[::-1], k_r2[::-1], left=np.nan, right=np.nan)),
-                sign[1]*np.interp(ri, r[::-1], v_gh[::-1], left=np.nan, right=np.nan)]
+        return [sign[0]*ri*np.interp(ri, S.r[::-1], v_gr_k_r[::-1], left=np.nan, right=np.nan) \
+                /np.sqrt(np.interp(ri, S.r[::-1], k_r2[::-1], left=np.nan, right=np.nan)),
+                sign[1]*np.interp(ri, S.r[::-1], v_gh[::-1], left=np.nan, right=np.nan)]
 
     sol = spint.odeint(v, x0, t, args=((-1,-1),))
 
@@ -137,8 +127,8 @@ for ell in args.ell:
             th = th[np.abs(th-th[0]) < th_right]
             break
     
-    x = s*np.cos(th)/R
-    y = s*np.sin(th)/R
+    x = s*np.cos(th)/S.R
+    y = s*np.sin(th)/S.R
     arc, = pl.plot(x, y)
 
     pl.arrow(x[-2], y[-2], x[-1]-x[-2], y[-1]-y[-2],
@@ -158,8 +148,8 @@ for ell in args.ell:
             th = th[np.abs(th-th[0]) < th_left]
             break
     
-    x = s*np.cos(th)/R
-    y = s*np.sin(th)/R
+    x = s*np.cos(th)/S.R
+    y = s*np.sin(th)/S.R
     arc, = pl.plot(x, y, color=arc.get_color())
 
     pl.arrow(x[-2], y[-2], x[-1]-x[-2], y[-1]-y[-2],
@@ -167,9 +157,9 @@ for ell in args.ell:
         
     # then dashed circle for inner turning point
     th = np.linspace(0., tau, 100)
-    s_t = np.interp(0., cs2-omega**2/ell/(ell+1)*r**2, r)
-    x = s_t*np.cos(th)/R
-    y = s_t*np.sin(th)/R
+    s_t = np.interp(0., S.cs2-omega**2/ell/(ell+1)*S.r**2, S.r)
+    x = s_t*np.cos(th)/S.R
+    y = s_t*np.sin(th)/S.R
     pl.plot(x, y, '--', color=arc.get_color())
     
 th = np.linspace(0., tau, 100)

@@ -60,7 +60,7 @@ def myplot():
 
     mlab.mesh(x, y, z, scalars=s, colormap='seismic')
 
-    glob, var = fgong.load_fgong('data/modelS.fgong')
+    S = fgong.load_fgong('data/modelS.fgong', return_object=True)
     css, eigs = adipls.load_amde('data/modelS.amde')
     I = np.where(css['ell']==ell)[0]
     if args.freq:
@@ -74,8 +74,7 @@ def myplot():
     print('freq = %.6f mHz' % css['nu_Ri'][i])
     r = eigs[i][:,0]
     y1 = eigs[i][:,1]
-    rho = np.interp(r, var[::-1,0]/glob[1],
-                    var[::-1,4])
+    rho = np.interp(r, S.x[::-1], S.rho[::-1])
 
     # r = np.linspace(0.,1.,51)
     # s = np.outer(np.sin(1.5*np.pi*r), np.ones(len(th)))

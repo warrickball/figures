@@ -73,7 +73,7 @@ z = np.outer(np.ones(np.size(phi)), np.cos(theta))
 a = get_colour(theta, phi)
 ax.plot_surface(x, y, z, facecolors=a, **kw)
 
-glob, var = fgong.load_fgong('data/modelS.fgong')
+S = fgong.load_fgong('data/modelS.fgong', return_object=True)
 css, eigs = adipls.load_amde('data/modelS.amde')
 I = np.where(css['ell']==args.ell)[0]
 if args.freq:
@@ -85,7 +85,7 @@ else:
     
 r = eigs[i][:,0][::3]
 y1 = eigs[i][:,1][::3]
-rho = np.interp(r, var[::-1,0]/glob[1], var[::-1,4])
+rho = np.interp(r, S.x[::-1], S.rho[::-1])
 
 # r = np.linspace(0.,1.,51)
 # a = np.outer(np.sin(2.*np.pi*r), np.ones(len(theta)))

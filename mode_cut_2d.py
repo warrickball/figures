@@ -47,7 +47,7 @@ def get_colour(theta, phi):
     a = 0.5+0.5*a/amax
     return pl.cm.seismic(a)
     
-glob, var = fgong.load_fgong('data/modelS.fgong')
+S = fgong.load_fgong('data/modelS.fgong', return_object=True)
 css, eigs = adipls.load_amde('data/modelS.amde')
 I = np.where(css['ell']==args.ell)[0]
 if args.freq:
@@ -59,7 +59,7 @@ else:
     
 r = eigs[i][:,0]
 y1 = eigs[i][:,1]
-rho = np.interp(r, var[::-1,0]/glob[1], var[::-1,4])
+rho = np.interp(r, S.x[::-1], S.rho[::-1])
 theta = np.linspace(0.0, 2.*np.pi, Ntheta)
 a = np.outer(r*rho**0.5*y1, np.ones(len(theta)))
 # use pi/2-theta instead of theta so that 0 degrees is at the top

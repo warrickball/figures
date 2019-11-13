@@ -21,6 +21,8 @@ parser.add_argument('--Ntheta', type=int, default=101,
                     help="number of points in latitude (default=101)")
 parser.add_argument('--Nphi', type=int, default=101,
                     help="number of points in longitude (default=101)")
+parser.add_argument('--cmap', type=str, default='seismic',
+                    help="colour map for surface of sphere (default='seismic')")
 parser.add_argument('-a', '--amplitude', type=float, default=1.0,
                     help="amplitude of oscillation (default=1.0)")
 parser.add_argument('-P', '--period', type=float, default=1.0,
@@ -66,7 +68,7 @@ x = sin(Th)*cos(Ph)
 y = sin(Th)*sin(Ph)
 z = cos(Th)
 s = sph_harm(emm,ell,Ph,Th).real
-m = mlab.mesh(x, y, z, scalars=s, colormap='seismic')
+m = mlab.mesh(x, y, z, scalars=s, colormap=args.cmap)
 
 # plot nodal lines
 if args.nodal_lines:

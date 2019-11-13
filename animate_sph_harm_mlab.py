@@ -57,13 +57,9 @@ th = np.linspace(0., pi, args.Ntheta)
 ph = np.linspace(-pi, pi, args.Nphi)
 Th, Ph = np.meshgrid(th, ph)
 
-x = sin(Th)*cos(Ph)
-y = sin(Th)*sin(Ph)
-z = cos(Th)
-s = sph_harm(emm, ell, Ph, Th).real
-
 mlab.figure(1, bgcolor=tuple(args.bgcolor), fgcolor=(0, 0, 0), size=args.resolution)
 mlab.clf()
+
 x = sin(Th)*cos(Ph)
 y = sin(Th)*sin(Ph)
 z = cos(Th)

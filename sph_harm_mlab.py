@@ -8,7 +8,7 @@ from numpy import pi, sin, cos
 from argparse import ArgumentParser
 import os
 
-parser = ArgumentParser(description="""Uses Mayavi to plot a static spherical 
+parser = ArgumentParser(description="""Use Mayavi to plot a static spherical 
 harmonic with a chosen angular degree and azimuthal order.  """)
 parser.add_argument('-l', '--ell', type=int, default=6,
                     help="angular degree (default=6)")
@@ -18,22 +18,22 @@ parser.add_argument('-o', '--output', type=str, default=None,
                     help="save figure to given filename without displaying "
                     "it (forces software rendering)")
 parser.add_argument('--Ntheta', type=int, default=101,
-                    help="number of points in theta (latitude, default=101)")
+                    help="number of points in latitude (default=101)")
 parser.add_argument('--Nphi', type=int, default=101,
-                    help="number of points in phi (longitude, default=101)")
+                    help="number of points in longitude (default=101)")
+parser.add_argument('--cmap', type=str, default='seismic',
+                    help="colour map for surface of sphere (default='seismic')")
 parser.add_argument('-a', '--amplitude', type=float, default=1.0,
                     help="amplitude of oscillation (default=1.0)")
 parser.add_argument('--resolution', type=float, nargs=2, default=[400,400],
                     help="resolution of image (default=[400,400])")
 parser.add_argument('--view', type=float, nargs=2,
                     default=[45.0, 54.735610317245346], help="viewing angle")
-parser.add_argument('--distance', type=float, default=5.0,
-                    help="camera distance")
+parser.add_argument('-d', '--distance', type=float, default=5.0,
+                    help="viewing distance (default=5.0)")
 parser.add_argument('--bgcolor', type=float, nargs=3, default=[1,1,1],
                     help="background colour, as [0..1] RGB values "
                     "(default=1,1,1)")
-parser.add_argument('--colormap', type=str, default='seismic',
-                    help="choice of colormap (default='seismic')")
 parser.add_argument('--show-nodal-lines', dest='nodal_lines', action='store_true')
 parser.add_argument('--hide-nodal-lines', dest='nodal_lines', action='store_false')
 parser.set_defaults(nodal_lines=False)
@@ -56,7 +56,7 @@ x = sin(Th)*cos(Ph)
 y = sin(Th)*sin(Ph)
 z = cos(Th)
 s = sph_harm(emm,ell,Ph,Th).real
-m = mlab.mesh(x, y, z, scalars=s, colormap=args.colormap)
+m = mlab.mesh(x, y, z, scalars=s, colormap=args.cmap)
 
 # plot nodal lines
 if args.nodal_lines:

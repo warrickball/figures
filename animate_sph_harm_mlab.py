@@ -30,7 +30,7 @@ parser.add_argument('-P', '--period', type=float, default=1.0,
 parser.add_argument('--Nframes', type=int, default=40,
                     help="number of frames per oscillation (default=40)")
 parser.add_argument('--resolution', type=float, nargs=2, default=[400,400],
-                    help="resolution of image (default=400x400)")
+                    help="resolution of image (default=[400,400])")
 parser.add_argument('--view', type=float, nargs=2, default=[45.0, 54.735610317245346],
                     help="viewing angle (default=45.0, 54.74)")
 parser.add_argument('-d', '--distance', type=float, default=5.0,

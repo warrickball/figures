@@ -42,8 +42,8 @@ parser.add_argument('--resolution', type=float, nargs=2, default=[400,400],
                     help="resolution of image (default=[400,400])")
 parser.add_argument('--view', type=float, nargs=2, default=[45.0, 54.735610317245346],
                     help="viewing angle (default=45.0, 54.74)")
-parser.add_argument('-d', '--distance', type=float, default=5.0,
-                    help="viewing distance (default=5.0)")
+parser.add_argument('-d', '--distance', type=float, default=5.5,
+                    help="viewing distance (default=5.5)")
 parser.add_argument('--bgcolor', type=float, nargs=3, default=[1,1,1],
                     help="background colour, as [0..1] RGB values "
                     "(default=1,1,1)")

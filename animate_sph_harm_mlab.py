@@ -23,8 +23,17 @@ parser.add_argument('--Nphi', type=int, default=101,
                     help="number of points in longitude (default=101)")
 parser.add_argument('--cmap', type=str, default='seismic',
                     help="colour map for surface of sphere (default='seismic')")
-parser.add_argument('-a', '--amplitude', type=float, default=1.0,
-                    help="amplitude of oscillation (default=1.0)")
+parser.add_argument('--vmax', type=float, default=1.0,
+                    help="maximum range of colour map; < 1.0 will saturate "
+                    "(default=1.0)")
+parser.add_argument('--vmin', type=float, default=None,
+                    help="minimum range of colour map (default=-vmax)")
+parser.add_argument('--pattern', type=str, default='',
+                    help="pattern for surface colours; options are \n"
+                    "'displacement' or 'dr' to use the local displacement "
+                    "or anything else for a static spherical harmonic map.")
+parser.add_argument('-a', '--amplitude', type=float, default=1.0/3.0,
+                    help="amplitude of oscillation (default=1/3)")
 parser.add_argument('-P', '--period', type=float, default=1.0,
                     help="period of oscillation, in seconds (default=1.0)")
 parser.add_argument('--Nframes', type=int, default=40,
@@ -64,7 +73,10 @@ x = sin(Th)*cos(Ph)
 y = sin(Th)*sin(Ph)
 z = cos(Th)
 s = sph_harm(emm,ell,Ph,Th).real
-m = mlab.mesh(x, y, z, scalars=s, colormap=args.cmap)
+s = s/np.max(np.abs(s))
+vmin = args.vmin if args.vmin else -args.vmax
+m = mlab.mesh(x, y, z, scalars=s, colormap=args.cmap,
+              vmin=vmin, vmax=args.vmax)
 
 # plot nodal lines
 if args.nodal_lines:
@@ -124,6 +136,10 @@ def save_frame(filename, phase):
     z = (1.+dr)*cos(Th)
 
     m.mlab_source.set(x=x, y=y, z=z)
+
+    if args.pattern in ['displacement', 'dr']:
+        m.mlab_source.set(scalars=s*sin(phase))
+
     # return mlab.screenshot(mode='rgb', antialiased=True)
     mlab.savefig(filename)
 

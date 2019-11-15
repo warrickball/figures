@@ -14,8 +14,9 @@ parser.add_argument('-l', '--ell', type=int, default=6,
                     help="angular degree")
 parser.add_argument('-m', '--emm', type=int, default=3,
                     help="azimuthal order")
-parser.add_argument('--save', type=str, default=None,
-                    help="save animation to this file")
+parser.add_argument('-o', '--output', type=str, default=None,
+                    help="save figure to given filename without displaying "
+                    "it (forces software rendering)")
 parser.add_argument('--Ntheta', type=int, default=101,
                     help="number of points in theta (latitude)")
 parser.add_argument('--Nphi', type=int, default=101,
@@ -73,8 +74,7 @@ ani = animation.FuncAnimation(fig, update, Nframes,
                               fargs=(ax,), interval=interval, repeat=True)
 
 # Much smoother if we save it
-if args.save:
-    ani.save(args.save, writer='imagemagick')
-    
-pl.show()
-
+if args.output:
+    ani.save(args.output, writer='imagemagick')
+else:
+    pl.show()

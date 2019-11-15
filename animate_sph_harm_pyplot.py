@@ -37,13 +37,13 @@ interval = args.period/Nframes*1e3  # in milliseconds
 def update(i, ax):
     ax.cla()
 
-    dr = sph_harm(emm,ell,Ph,Th).real*cos(2.*pi*i/Nframes)*args.amplitude
+    dr = s*cos(2.*pi*i/Nframes)*args.amplitude
     x = (1.+dr)*sin(Th)*cos(Ph)
     y = (1.+dr)*sin(Th)*sin(Ph)
     z = (1.+dr)*cos(Th)
-    s = ax.plot_surface(x, y, z,
-                        facecolors=pl.cm.seismic(0.5+dr/args.amplitude),
-                        **plot_kwargs)
+    surf = ax.plot_surface(x, y, z,
+                           facecolors=pl.cm.seismic(0.5+dr/args.amplitude),
+                           **plot_kwargs)
 
     ax.set_xlim(-0.9,0.9)
     ax.set_ylim(-0.9,0.9)
@@ -51,7 +51,7 @@ def update(i, ax):
     pl.axis('off')
     ax.view_init(*args.view)
 
-    return s,
+    return surf,
 
 plot_kwargs = {'rstride':2,
                'cstride':2,
@@ -67,6 +67,7 @@ ax = pl.gca(projection='3d')
 th = np.linspace(0., pi, args.Ntheta)
 ph = np.linspace(-pi, pi, args.Nphi)
 Th, Ph = np.meshgrid(th, ph)
+s = sph_harm(emm,ell,Ph,Th).real
 
 update(0, ax)
 

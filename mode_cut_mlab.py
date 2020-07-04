@@ -61,19 +61,19 @@ def myplot():
     mlab.mesh(x, y, z, scalars=s, colormap='seismic')
 
     S = fgong.load_fgong('data/modelS.fgong', return_object=True)
-    css, eigs = adipls.load_amde('data/modelS.amde')
-    I = np.where(css['ell']==ell)[0]
+    amde = adipls.load_amde('data/modelS.amde', return_object=True)
+    I = np.where(amde.l==ell)[0]
     if args.freq:
-        i = I[np.argmin((css['nu_Ri'][I]-args.freq)**2)]
+        i = I[np.argmin((amde.nu_Ri[I]-args.freq/1e3)**2)]
     elif args.enn:
-        i = I[css['enn'][I]==args.enn][0]
+        i = I[amde.n[I]==args.enn][0]
     else:
-        i = I[css['enn'][I]==14][0]
+        i = I[amde.n[I]==14][0]
         
-    print('   n = %i' % css['enn'][i])
-    print('freq = %.6f mHz' % css['nu_Ri'][i])
-    r = eigs[i][:,0]
-    y1 = eigs[i][:,1]
+    print('   n = %i' % amde.n[i])
+    print('freq = %.6f mHz' % (amde.nu_Ri[i]*1e3))
+    r = amde.eigs[i][:,0]
+    y1 = amde.eigs[i][:,1]
     rho = np.interp(r, S.x[::-1], S.rho[::-1])
 
     # r = np.linspace(0.,1.,51)

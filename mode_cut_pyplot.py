@@ -74,17 +74,19 @@ a = get_colour(theta, phi)
 ax.plot_surface(x, y, z, facecolors=a, **kw)
 
 S = fgong.load_fgong('data/modelS.fgong', return_object=True)
-css, eigs = adipls.load_amde('data/modelS.amde')
-I = np.where(css['ell']==args.ell)[0]
+amde = adipls.load_amde('data/modelS.amde', return_object=True)
+I = np.where(amde.l==args.ell)[0]
 if args.freq:
-    i = I[np.argmin((css['nu_Ri'][I]-args.freq)**2)]
+    i = I[np.argmin((amde.nu_Ri[I]-args.freq/1e3)**2)]
 elif args.enn:
-    i = I[css['enn'][I]==args.enn][0]
+    i = I[amde.n[I]==args.enn][0]
 else:
-    i = I[css['enn'][I]==14][0]
+    i = I[amde.n[I]==14][0]
     
-r = eigs[i][:,0][::3]
-y1 = eigs[i][:,1][::3]
+print('   n = %i' % amde.n[i])
+print('freq = %.6f mHz' % (amde.nu_Ri[i]*1e3))
+r = amde.eigs[i][:,0][::3]
+y1 = amde.eigs[i][:,1][::3]
 rho = np.interp(r, S.x[::-1], S.rho[::-1])
 
 # r = np.linspace(0.,1.,51)

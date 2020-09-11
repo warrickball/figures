@@ -22,10 +22,10 @@ parser.add_argument('-n', '--density', type=float, default=6e27,
                     help="number density, in units of cm^{-3} (default=6e27)")
 args = parser.parse_args()
 
-h = 6.626069e-27
-k = 1.38065e-16
-m_e = 9.109382e-28
-clight = 2.997902458e10
+h = 6.62607015e-27      # exact
+k = 1.380649e-16        # exact
+clight = 2.99792458e10  # exact
+m_e = 9.1093837015e-28  # CODATA 2018
 
 # eq (3.28)
 def n_max(p):

@@ -36,7 +36,7 @@ def get_J_zeros(l, z0s):
     return np.array(zs)
 
 Dz = np.pi
-x = np.linspace(0., 24.*np.pi, 1001)
+x = np.linspace(0., 24.*np.pi, 101)
 z0 = np.arange(0.01, x[-1], np.pi/2)
 for l in range(4):
     z = get_J_zeros(l, z0)

@@ -13,21 +13,21 @@ try:
 except IOError:
     from astroquery.gaia import Gaia
     job = Gaia.launch_job_async("""
-SELECT \
-phot_g_mean_mag AS g, \
+SELECT
+phot_g_mean_mag AS g,
 parallax,
-e_bp_min_rp_val AS e_bp_rp, \
-phot_bp_mean_mag AS bp, \
-phot_rp_mean_mag AS rp \
-FROM gaiadr2.gaia_source \
-WHERE parallax_over_error > 10 \
+e_bp_min_rp_val AS e_bp_rp,
+phot_bp_mean_mag AS bp,
+phot_rp_mean_mag AS rp
+FROM gaiadr2.gaia_source
+WHERE parallax_over_error > 10
 AND parallax > 10
-AND phot_g_mean_flux_over_error > 50 \
-AND phot_rp_mean_flux_over_error > 20 \
-AND phot_bp_mean_flux_over_error > 20 \
-AND phot_bp_rp_excess_factor < 1.3+0.06*power(phot_bp_mean_mag-phot_rp_mean_mag,2) \
-AND phot_bp_rp_excess_factor > 1.0+0.015*power(phot_bp_mean_mag-phot_rp_mean_mag,2) \
-AND visibility_periods_used > 8 \
+AND phot_g_mean_flux_over_error > 50
+AND phot_rp_mean_flux_over_error > 20
+AND phot_bp_mean_flux_over_error > 20
+AND phot_bp_rp_excess_factor < 1.3+0.06*power(phot_bp_mean_mag-phot_rp_mean_mag,2)
+AND phot_bp_rp_excess_factor > 1.0+0.015*power(phot_bp_mean_mag-phot_rp_mean_mag,2)
+AND visibility_periods_used > 8
 AND astrometric_chi2_al/(astrometric_n_good_obs_al-5)<1.44*greatest(1,exp(-0.4*(phot_g_mean_mag-19.5)))""")
     r = job.get_results().as_array().data
     np.save('data/gaia_HR.npy', r)

@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
 
+from argparse import ArgumentParser
 import numpy as np
 import matplotlib.pyplot as pl
 from scipy.optimize import curve_fit
+
+parser = ArgumentParser()
+parser.add_argument('--filters', type=str, default='UBVRI',
+                    help="selection of photometric bands to plot "
+                    "(default='UBVRI')")
+parser.add_argument('--marker', type=str, default='.',
+                    help="marker style (default='.')")
+args = parser.parse_args()
 
 P = 5.366249    # Wikipedia
 E = 2455479.905 # Paper
@@ -44,14 +53,24 @@ A_UB = build_fit(UB['phase'], UB['UB'])
 A_VR = build_fit(VR['phase'], VR['VR'])
 A_RI = build_fit(RI['phase'], RI['RI'])
 
-pl.errorbar(UB['phase'], multiharmonic(UB['phase'], *(A_V+A_BV))+UB['UB'], fmt='.', yerr=UB['err'], label='U', c='C4');
-pl.errorbar(BV['phase'], multiharmonic(BV['phase'], *A_V)+BV['BV'], fmt='.', yerr=BV['err'], label='B', c='C0');
-pl.errorbar(V['phase'], V['V'], fmt='.', yerr=V['err'], label='V', c='C2');
-pl.errorbar(VR['phase'], multiharmonic(VR['phase'], *A_V)-VR['VR'], fmt='.', yerr=VR['err'], label='R', c='C1');
-pl.errorbar(RI['phase'], multiharmonic(RI['phase'], *(A_V-A_VR))-RI['RI'], fmt='.', yerr=RI['err'], label='I', c='C3');
+if 'U' in args.filters:
+    pl.errorbar(UB['phase'], multiharmonic(UB['phase'], *(A_V+A_BV))+UB['UB'], fmt=args.marker, yerr=UB['err'], label='U', c='C4');
+if 'B' in args.filters:
+    pl.errorbar(BV['phase'], multiharmonic(BV['phase'], *A_V)+BV['BV'], fmt=args.marker, yerr=BV['err'], label='B', c='C0');
+if 'V' in args.filters:
+    pl.errorbar(V['phase'], V['V'], fmt=args.marker, yerr=V['err'], label='V', c='C2');
+if 'R' in args.filters:
+    pl.errorbar(VR['phase'], multiharmonic(VR['phase'], *A_V)-VR['VR'], fmt=args.marker, yerr=VR['err'], label='R', c='C1');
+if 'I' in args.filters:
+    pl.errorbar(RI['phase'], multiharmonic(RI['phase'], *(A_V-A_VR))-RI['RI'], fmt=args.marker, yerr=RI['err'], label='I', c='C3');
+
 pl.gca().invert_yaxis()
 pl.xlabel('phase')
-pl.ylabel('magnitude')
 pl.suptitle('δ Cephei')
-pl.legend()
+if len(args.filters) > 1:
+    pl.legend()
+    pl.ylabel('magnitude')
+else:
+    pl.ylabel('%s magnitude' % args.filters)
+
 pl.show()

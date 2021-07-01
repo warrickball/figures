@@ -62,7 +62,7 @@ for (label, wavelength) in line_data:
     label = label.replace('Hb',r'H$\beta$')
     line, = pl.plot([wavelength,wavelength],[0,1], 'w-', alpha=0.25, lw=1.5);
     line.set_dashes([4,6])
-    pl.annotate(s=label, xy=((wavelength-A[0])/(A[1]-A[0]), 1.02),
+    pl.annotate(text=label, xy=((wavelength-A[0])/(A[1]-A[0]), 1.02),
                 xycoords='axes fraction', color='k', ha='center')
 
 # annotate spectral types
@@ -73,11 +73,11 @@ for letter in ['O','B','A','F','G','K','M','L']:
     i_next = [i for i in range(N) if sptypes[i].startswith(letter)][-1]+1
     yticks.append(1.0-1.0*i_next/N)
     y_text = 1.0-1.0*i_prev/N-0.5*(i_next-i_prev)/N
-    pl.annotate(s=letter,xy=(-0.04, y_text), xycoords='axes fraction',
+    pl.annotate(text=letter,xy=(-0.04, y_text), xycoords='axes fraction',
                 va='center')
     i_prev = i_next
 
 pl.yticks(yticks, ['' for i in range(len(yticks))])
-pl.annotate(s='spectral type', xy=(-0.08, 0.5), xycoords='axes fraction',
+pl.annotate(text='spectral type', xy=(-0.08, 0.5), xycoords='axes fraction',
             va='center', rotation=90.0)
 pl.show()

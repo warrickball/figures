@@ -9,7 +9,7 @@ try:
 except IOError:
     from astroquery.vizier import Vizier
 
-    data = Vizier(columns=['**', '+_r'], row_limit=-1).get_catalogs('I/239/hip_main')[0].as_array().data
+    data = Vizier(columns=['**', '+_r'], row_limit=-1).get_catalogs('I/311/hip2')[0].as_array().data
     np.save('data/hip_main.npy', data)
 
 data = data[data['e_Hpmag']<0.1]

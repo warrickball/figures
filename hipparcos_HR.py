@@ -3,66 +3,21 @@
 from matplotlib import pyplot as pl
 import numpy as np
 from scipy.interpolate import interp1d
-
-hip_dtype = [('Catalog', '|S1'), ('HIP', int), ('Proxy', '|S1'),
-             ('RAhms', '|S11'), ('DEdms', '|S11'), ('Vmag', float),
-             ('VarFlag', int), ('r_Vmag', '|S1'), ('RAdeg', float),
-             ('DEdeg', float), ('AstroRef', '|S1'), ('Plx', float),
-             ('pmRA', float), ('pmDE', float), ('e_RAdeg', float),
-             ('e_DEdeg', float), ('e_Plx', float), ('e_pmRA', float),
-             ('e_pmDE', float), ('DE:RA', float), ('Plx:RA', float),
-             ('Plx:DE', float), ('pmRA:RA', float),
-             ('pmRA:DE', float), ('pmRA:Plx', float),
-             ('pmDE:RA', float), ('pmDE:DE', float),
-             ('pmDE:Plx', float), ('mDE:pmRA', float), ('F1', int),
-             ('F2', float), ('---', int),
-             ('BTmag', float), ('e_BTmag', float), ('VTmag', float),
-             ('e_VTmag', float), ('m_BTmag', '|S1'), ('B-V', float),
-             ('e_B-V', float), ('r_B-V', '|S1'), ('V-I', float),
-             ('e_V-I', float), ('r_V-I', '|S1'), ('CombMag', '|S1'),
-             ('Hpmag', float), ('e_Hpmag', float), ('Hpscat', float),
-             ('o_Hpmag', int), ('m_Hpmag', '|S1'), ('Hpmax', float),
-             ('HPmin', float), ('Period', float), ('HvarType', '|S1'),
-             ('moreVar', '|S1'), ('orePhoto', '|S1'),
-             ('CCDM', '|S10'), ('n_CCDM', '|S1'), ('Nsys', int),
-             ('Ncomp', int), ('MultFlag', '|S1'), ('Source', '|S1'),
-             ('Qual', '|S1'), ('m_HIP', '|S2'), ('theta', int), ('rho', float),
-             ('e_rho', float), ('dHp', float), ('e_dHp', float),
-             ('Survey', '|S1'), ('Chart', '|S1'), ('Notes', '|S1'),
-             ('HD', int), ('BD', '|S10'), ('CoD', '|S10'),
-             ('CPD', '|S10'), ('(V-I)red', float), ('SpType', '|S12'),
-             ('r_SpType', '|S1')]
             
 try:
     data = np.load('data/hip_main.npy')
 except IOError:
-    try:
-        from urllib2 import urlopen
-    except ImportError:
-        from urllib.request import urlopen
-        
-    response = urlopen('ftp://cdsarc.u-strasbg.fr/pub/cats/I/239/hip_main.dat.gz')
-    with open('data/hip_main.dat.gz', 'wb') as f:
-        f.write(response.read())
+    from astroquery.vizier import Vizier
 
-    resonse.close()
-
-    np.save('data/hip_main.npy', np.genfromtxt('data/hip_main.dat.gz',
-                                               delimiter='|',
-                                               dtype=hip_dtype))
-    data = np.load('data/hip_main.npy')
-
-
-# print(data.dtype.names)
-for k in ['e_Hpmag', 'e_Plx']:
-    data = data[~np.isnan(data[k])]
+    data = Vizier(columns=['**', '+_r'], row_limit=-1).get_catalogs('I/239/hip_main')[0].as_array().data
+    np.save('data/hip_main.npy', data)
 
 data = data[data['e_Hpmag']<0.1]
-data = data[data['e_Plx']/data['Plx']<0.05]
 data = data[data['Plx']>0]
+data = data[data['e_Plx']/data['Plx']<0.05]
 
 Hp = data['Hpmag'] + 5.0 + 5.0*np.log10(1e-3*data['Plx'])
-BV = data['BV']
+BV = data['B-V']
 
 I = ~np.isnan(BV)
 BV = BV[I]

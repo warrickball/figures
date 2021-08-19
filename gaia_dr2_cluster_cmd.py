@@ -51,13 +51,13 @@ except:
     # cache file locally
     np.save('data/gaia_dr2_cluster_cmd.npy', data, allow_pickle=True)
 
-
+vmin = ocs['age'].min()
+vmax = ocs['age'].max()
 for row in ocs[np.argsort(ocs['age'])]:
     cluster = row['Cluster']
     I = data['cluster'] == cluster
     pl.scatter(data[I]['bp_rp'], data[I]['phot_g_mean_mag']-row['DM'], s=3,
-               c=row['age']*np.ones(sum(I)), label=cluster, cmap='jet',
-               vmin=ocs['age'].min(), vmax=ocs['age'].max())
+               color=pl.cm.jet((row['age']-vmin)/(vmax-vmin)), label=cluster)
 
 pl.xlabel(r"$\mathrm{G}_\mathrm{BP}-\mathrm{G}_\mathrm{RP}$")
 pl.ylabel(r"$M_\mathrm{G}$")

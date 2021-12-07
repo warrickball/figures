@@ -11,6 +11,8 @@ parser.add_argument('--levels', type=int, default=20,
                     help="number of levels passed to contourf (default 100)")
 parser.add_argument('--padding', type=float, default=0.01,
                     help="fractional padding between edge and circle (default=0.01)")
+parser.add_argument('--cmap', type=str, default='viridis',
+                    help="name of matplotlib colourmap to use (default='viridis')")
 args = parser.parse_args()
 
 if args.figsize:
@@ -55,10 +57,10 @@ pl.subplots_adjust(top=1-b, bottom=b, left=b, right=1-b)
 
 data = rot2d.T[::-1]
 data[err2d.T[::-1]/data>0.01] = np.nan
-ax.contourf(th, r, data, args.levels)
-ax.contourf(np.pi-th, r, data, args.levels)
-ax.contourf(-th, r, data, args.levels)
-ax.contourf(th-np.pi, r, data, args.levels)
+ax.contourf(th, r, data, args.levels, cmap=args.cmap)
+ax.contourf(np.pi-th, r, data, args.levels, cmap=args.cmap)
+ax.contourf(-th, r, data, args.levels, cmap=args.cmap)
+ax.contourf(th-np.pi, r, data, args.levels, cmap=args.cmap)
 
 # plot base of convection zone
 th = np.linspace(0., 2.*np.pi, 401)

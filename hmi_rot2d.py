@@ -19,6 +19,8 @@ parser.add_argument('--dpi', type=float,
                     "rcParams['figure.dpi']")
 parser.add_argument('--figsize', type=float, nargs=2,
                     help="figure size, passed to rcParams['figure.figsize']")
+parser.add_argument('--cmap', type=str, default='viridis',
+                    help="name of matplotlib colourmap to use (default='viridis')")
 args = parser.parse_args()
 
 if args.figsize:
@@ -96,7 +98,7 @@ ax1.patch.zorder = 0.9
 Ncontours = 20
 data = rot2d.T[::-1]
 data[err2d.T[::-1]/data>0.01] = np.nan
-c = aux_ax.contourf(th, r, data, Ncontours)
+c = aux_ax.contourf(th, r, data, Ncontours, cmap=args.cmap)
 pl.colorbar(c, label='rotation rate (nHz)')
  
 # plot base of convection zone

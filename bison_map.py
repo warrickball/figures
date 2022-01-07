@@ -14,27 +14,16 @@ coords = {'Mount Wilson': (34.22, -118.07),
           'Paul Wild Observatory': (-30.314, 149.562),
           'University of Birmingham': (52.450556, -1.930556)}
 
-lon0, lat0 = -45, 0
-ax = pl.subplot(1, 2, 1, projection=ccrs.Orthographic(lon0, lat0)) # (lon, lat)
-ax.set_global()
+lat0 = 0
+for i, lon0 in enumerate([-45, 135]):
+    ax = pl.subplot(1, 2, i+1, projection=ccrs.Orthographic(lon0, lat0)) # (lon, lat)
+    ax.set_global()
 
-ax.add_feature(cartopy.feature.OCEAN, zorder=0)
-ax.add_feature(cartopy.feature.LAND, zorder=0, edgecolor='black')
+    ax.add_feature(cartopy.feature.OCEAN, zorder=0)
+    ax.add_feature(cartopy.feature.LAND, zorder=0, edgecolor='black')
 
-for lat, lon in coords.values():
-    if lon0-90 < lon < lon0+90:
-        pl.plot(lon, lat, 'ro', transform=ccrs.PlateCarree())
-        
-
-lon0, lat0 = 135, 0
-ax = pl.subplot(1, 2, 2, projection=ccrs.Orthographic(lon0, lat0)) # (lon, lat)
-ax.set_global()
-ax.add_feature(cartopy.feature.OCEAN, zorder=0)
-ax.add_feature(cartopy.feature.LAND, zorder=0, edgecolor='black')
-
-for lat, lon in coords.values():
-    if lon0-90 < lon < lon0+90:
-        pl.plot(lon, lat, 'ro', transform=ccrs.PlateCarree())
-
+    for lat, lon in coords.values():
+        if lon0-90 < lon < lon0+90:
+            pl.plot(lon, lat, 'ro', transform=ccrs.PlateCarree())
 
 pl.show()

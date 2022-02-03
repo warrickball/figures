@@ -181,6 +181,10 @@ def anim():
         z = (1.+dr)*cos(Th)
 
         m.mlab_source.set(x=x, y=y, z=z)
+
+        if args.pattern in ['displacement', 'dr']:
+            m.mlab_source.set(scalars=s*sin(phase))
+
         yield
 
 anim()

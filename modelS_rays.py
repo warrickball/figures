@@ -14,7 +14,7 @@ intermediate values too).  Still need to
 import numpy as np
 from matplotlib import pyplot as pl
 from tomso import fgong
-from scipy import integrate as spint
+from scipy import integrate, interpolate
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
@@ -37,6 +37,9 @@ parser.add_argument('--figsize', type=float, nargs=2,
 parser.add_argument('--padding', type=float, default=0.01,
                     help="fractional padding between edge and circle "
                     "(default=0.01)")
+parser.add_argument('--kind', type=str, default='linear',
+                    help="kind of interpolation for Model S structure "
+                    "(default='linear')")
 args = parser.parse_args()
 
 if args.figsize:
@@ -64,15 +67,17 @@ except IOError:
 
     S = fgong.load_fgong('data/modelS.fgong', G=6.67232e-8, return_object=True)
 
+S.var = S.var[::-1] # convenient for interpolation to reverse data now
+
 omega = args.freq*TAU*1e-3
 
 omega_AC2 = S.cs2/4./S.Hp**2
 
-t = np.linspace(0., 10000., 100000)/S.R
+t = np.linspace(0., 10000., 1000)/S.R
 x0 = [0.9995*S.R, TAU/4.]
 
 for ell in args.ell:
-    k_h = np.sqrt(1.0*ell*(ell+1))/S.r
+    k_h = np.sqrt(ell*(ell+1))/S.r
     k_r2 = (omega**2-omega_AC2)/S.cs2 - k_h**2*(1.-S.N2/omega**2)
     k_r = np.sqrt(k_r2)
 
@@ -80,22 +85,25 @@ for ell in args.ell:
     v_gh = k_h*omega*S.cs2*(omega**2-S.N2)/(omega**4-k_h**2*S.cs2*S.N2)  # dtheta
     v_gr_k_r = k_r2*omega**3*S.cs2/(omega**4-k_h**2*S.cs2*S.N2)
 
-    # I = (np.isfinite(v_gr*v_gh))
-    # v_gr = v_gr[I]
-    # v_gh = v_gh[I]
-    # r = r[I]
+    # create interpolators
+    kwargs = {'kind': args.kind, 'assume_sorted': True, 'bounds_error': False}
+    int_v_gr_kr = interpolate.interp1d(S.r, v_gr_k_r, **kwargs)
+    int_k_r2 = interpolate.interp1d(S.r, k_r2, **kwargs)
+    int_v_gh = interpolate.interp1d(S.r, v_gh, **kwargs)
 
     # RHS of dlnr/ds, dtheta/ds
-    def v(x, t, sign=(-1,-1)):
+    def v(t, x, sign=(-1,-1)):
         ri, thi = x
-        # return [sign[0]*ri*np.interp(ri, r[::-1], v_gr[::-1], left=np.nan, right=np.nan),
-        return [sign[0]*ri*np.interp(ri, S.r[::-1], v_gr_k_r[::-1], left=np.nan, right=np.nan) \
-                /np.sqrt(np.interp(ri, S.r[::-1], k_r2[::-1], left=np.nan, right=np.nan)),
-                sign[1]*np.interp(ri, S.r[::-1], v_gh[::-1], left=np.nan, right=np.nan)]
+        return [sign[0]*ri*int_v_gr_kr(ri)/np.sqrt(int_k_r2(ri)), sign[1]*int_v_gh(ri)]
 
-    sol = spint.odeint(v, x0, t, args=((-1,-1),))
+    def lower(t, x):
+        return omega - np.interp(x[0], S.r, k_h*S.cs)
 
-    s, th = sol.T
+    lower.terminal = True
+
+    sol = integrate.solve_ivp(v, t[[0,-1]], x0, t_eval=t, events=lower, method='RK23')
+
+    s, th = sol.y
     I = np.isfinite(s*th)
     s = s[I]
     th = th[I]
@@ -157,7 +165,7 @@ for ell in args.ell:
         
     # then dashed circle for inner turning point
     th = np.linspace(0., TAU, 100)
-    s_t = np.interp(0., S.cs2-omega**2/ell/(ell+1)*S.r**2, S.r)
+    s_t = np.interp(0., omega**2/ell/(ell+1)*S.r**2-S.cs2, S.r)
     x = s_t*np.cos(th)/S.R
     y = s_t*np.sin(th)/S.R
     pl.plot(x, y, '--', color=arc.get_color())

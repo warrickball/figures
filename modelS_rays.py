@@ -170,6 +170,7 @@ pl.plot(x, y, 'k-')
 b = args.padding
 pl.subplots_adjust(top=1-b, bottom=b, left=b, right=1-b)
 pl.axis('off')
+pl.gca().set_aspect('equal')
 
 if args.output:
     pl.savefig(args.output)

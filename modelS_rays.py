@@ -54,18 +54,9 @@ th_left = args.theta_left*TAU
 try:
     S = fgong.load_fgong('data/modelS.fgong', G=6.67232e-8, return_object=True)
 except IOError:
-    try:
-        from urllib2 import urlopen
-    except ImportError:
-        from urllib.request import urlopen
-        
-    response = urlopen('http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c')
-    with open('data/modelS.fgong','wb') as f:
-        f.write(response.read())
-
-    response.close()
-
-    S = fgong.load_fgong('data/modelS.fgong', G=6.67232e-8, return_object=True)
+    S = fgong.load_fgong('http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c',
+                         G=6.67232e-8, return_object=True)
+    S.to_file('data/modelS.fgong')
 
 S.var = S.var[::-1] # convenient for interpolation to reverse data now
 

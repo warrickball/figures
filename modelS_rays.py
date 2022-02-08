@@ -61,11 +61,11 @@ except IOError:
 S.var = S.var[::-1] # convenient for interpolation to reverse data now
 
 omega = args.freq*TAU*1e-3
-
 omega_AC2 = S.cs2/4./S.Hp**2
+imax = np.argmax(omega_AC2)
 
 t = np.linspace(0., 10000., 1000)/S.R
-x0 = [0.9995*S.R, TAU/4.]
+x0 = [0.999*np.interp(omega**2, omega_AC2[:imax], S.r[:imax]), TAU/4]
 
 for ell in args.ell:
     k_h = np.sqrt(ell*(ell+1))/S.r

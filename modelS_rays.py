@@ -1,26 +1,21 @@
 #!/usr/bin/env python
 
-"""Illustrates (approximate) ray propagation for p-mode in Model S.
-Currently only seems to work up to l=49 (and fails on a few
-intermediate values too).  Still need to
-- check that the inner turning point is correct,
-- start integration from upper reflecting boundary, and
-- add options for how many times to "bounce" at the surface.
-
-"""
-
-# formulae from http://soi.stanford.edu/papers/dissertations/giles/thesis/PDF/chapter02.pdf
-
 import numpy as np
 from matplotlib import pyplot as pl
 from tomso import fgong
 from scipy import integrate, interpolate
 from argparse import ArgumentParser
 
-parser = ArgumentParser()
+parser = ArgumentParser(description=
+"""Illustrates (approximate) ray propagation for pressure waves in
+Model S using formulae from Ch. 2 of Peter Giles' PhD thesis:
+
+    http://soi.stanford.edu/papers/dissertations/giles/thesis/PDF/
+""")
+
 parser.add_argument('-l', '--ell', type=int, nargs='+', default=[2, 20, 25, 75],
                     help="angular degree(s) of the desired rays "
-                    "(default 2, 20, 25, 75)")
+                    "(default=2, 20, 25, 75)")
 parser.add_argument('-f', '--freq', type=float, default=3.0,
                     help="cyclic frequency in mHz (default=3.0, as in cover of "
                     "JCD's notes")

@@ -6,7 +6,6 @@ from scipy.special import sph_harm, lpmv
 from scipy.optimize import fsolve
 from numpy import pi, sin, cos
 from argparse import ArgumentParser
-import os
 
 parser = ArgumentParser(description="""Use Mayavi to plot a static spherical 
 harmonic with a chosen angular degree and azimuthal order.  """)

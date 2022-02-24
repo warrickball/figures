@@ -29,6 +29,8 @@ parser.add_argument('-d', '--distance', type=float, default=5.0,
 parser.add_argument('--bgcolor', type=float, nargs=3, default=[1,1,1],
                     help="background colour, as [0..1] RGB values "
                     "(default=1,1,1)")
+parser.add_argument('--transparent', action='store_true',
+                    help="save image to file with a transparent background")
 parser.add_argument('--show-nodal-lines', dest='nodal_lines', action='store_true')
 parser.add_argument('--hide-nodal-lines', dest='nodal_lines', action='store_false')
 parser.set_defaults(nodal_lines=False)
@@ -108,4 +110,9 @@ if args.nodal_lines:
 mlab.view(azimuth=args.view[0], elevation=args.view[1], distance=args.distance)
 mlab.show()
 if args.output:
-    mlab.savefig(args.output)
+    if args.transparent:
+        import matplotlib.pyplot as pl
+
+        pl.imsave(args.output, mlab.screenshot(mode='rgba', antialiased=True))
+    else:
+        mlab.savefig(args.output)

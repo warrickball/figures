@@ -5,12 +5,6 @@ oscillation mode using Mayavi (as opposed to matplotlib).
 
 """
 
-import pyface.qt
-import numpy as np
-from mayavi import mlab
-from scipy.special import sph_harm, lpmv, factorial
-from scipy.optimize import fsolve
-from tomso import adipls, fgong
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
@@ -32,7 +26,16 @@ parser.add_argument('--view', type=float, nargs=2, default=[15.0, 90.0],
 parser.add_argument('--bgcolor', type=float, nargs=3, default=[1,1,1],
                     help="background colour, as [0..1] RGB values "
                     "(default=1,1,1)")
+parser.add_argument('--transparent', action='store_true',
+                    help="save image to file with a transparent background")
 args = parser.parse_args()
+
+import pyface.qt
+import numpy as np
+from mayavi import mlab
+from scipy.special import sph_harm, lpmv, factorial
+from scipy.optimize import fsolve
+from tomso import adipls, fgong
 
 if args.freq and args.enn:
         raise ValueError("""you can only use one of the radial order (-n,
@@ -43,8 +46,8 @@ if args.output:
 
 mlab.figure(1, bgcolor=tuple(args.bgcolor), fgcolor=(0, 0, 0), size=(600, 600))
 mlab.clf()
-ell = args.ell
-emm = args.emm
+l = args.ell
+m = args.emm
 
 # ph = np.linspace(0.5*np.pi, 2.0*np.pi, 100)
 @mlab.show
@@ -56,13 +59,13 @@ def myplot():
     x = np.outer(np.cos(ph), np.sin(th))
     y = np.outer(np.sin(ph), np.sin(th))
     z = np.outer(np.ones(np.size(ph)), np.cos(th))
-    s = sph_harm(emm, ell, Ph, Th).real
+    s = sph_harm(m, l, Ph, Th).real
 
     mlab.mesh(x, y, z, scalars=s, colormap='seismic')
 
     S = fgong.load_fgong('data/modelS.fgong', return_object=True)
     amde = adipls.load_amde('data/modelS.amde', return_object=True)
-    I = np.where(amde.l==ell)[0]
+    I = np.where(amde.l==l)[0]
     if args.freq:
         i = I[np.argmin((amde.nu_Ri[I]-args.freq/1e3)**2)]
     elif args.enn:
@@ -79,7 +82,7 @@ def myplot():
     # r = np.linspace(0.,1.,51)
     # s = np.outer(np.sin(1.5*np.pi*r), np.ones(len(th)))
     s = np.outer(r*rho**0.5*y1, np.ones(len(th)))
-    s = s*sph_harm(emm, ell, 
+    s = s*sph_harm(m, l,
                    np.outer(np.ones(len(r)), np.ones(len(th))), 
                    np.outer(np.ones(len(r)), th)).real
     # s = 0.5+0.5*s/np.max(np.abs(s))
@@ -97,12 +100,17 @@ def myplot():
     y = np.outer(r, np.sin(th))
     x = 0.*y
     z = np.outer(r, np.cos(th))
-    mlab.mesh(x, y, z, scalars=-s, colormap='seismic',
+    mlab.mesh(x, y, z, scalars=s, colormap='seismic',
               vmin=smin, vmax=smax)
 
     mlab.view(azimuth=args.view[0], elevation=args.view[1], distance=4.2)
 
 myplot()
 if args.output:
-    mlab.savefig(args.output)
+    if args.transparent:
+        import matplotlib.pyplot as pl
+
+        pl.imsave(args.output, mlab.screenshot(mode='rgba', antialiased=True))
+    else:
+        mlab.savefig(args.output)
 

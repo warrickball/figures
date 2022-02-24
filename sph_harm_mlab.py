@@ -59,7 +59,10 @@ x = sin(Th)*cos(Ph)
 y = sin(Th)*sin(Ph)
 z = cos(Th)
 s = sph_harm(m, l, Ph, Th).real
-m = mlab.mesh(x, y, z, scalars=s, colormap=args.cmap)
+if l > 0:
+    mlab.mesh(x, y, z, scalars=s, colormap=args.cmap)
+else:
+    mlab.mesh(x, y, z, scalars=0*s, colormap=args.cmap, vmin=-1, vmax=1)
 
 # plot nodal lines
 if args.nodal_lines and l > 0:

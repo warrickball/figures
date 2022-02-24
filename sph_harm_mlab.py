@@ -1,10 +1,5 @@
 #!/usr/bin/env python
 
-import numpy as np
-from mayavi import mlab
-from scipy.special import sph_harm, lpmv
-from scipy.optimize import fsolve
-from numpy import pi, sin, cos
 from argparse import ArgumentParser
 
 parser = ArgumentParser(description="""Use Mayavi to plot a static spherical 
@@ -38,6 +33,12 @@ parser.add_argument('--show-nodal-lines', dest='nodal_lines', action='store_true
 parser.add_argument('--hide-nodal-lines', dest='nodal_lines', action='store_false')
 parser.set_defaults(nodal_lines=False)
 args = parser.parse_args()
+
+import numpy as np
+from mayavi import mlab
+from scipy.special import sph_harm, lpmv
+from scipy.optimize import fsolve
+from numpy import pi, sin, cos
 
 if args.output:
     mlab.options.offscreen = True

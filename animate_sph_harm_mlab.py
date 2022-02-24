@@ -58,8 +58,8 @@ if args.output:
 Nframes = args.Nframes
 interval = int(args.period/Nframes*1000.)  # in milliseconds?
 dphase = 2.*pi/Nframes
-ell = args.ell
-emm = args.emm
+l = args.ell
+m = args.emm
 
 # Create a sphere
 th = np.linspace(0., pi, args.Ntheta)
@@ -72,7 +72,7 @@ mlab.clf()
 x = sin(Th)*cos(Ph)
 y = sin(Th)*sin(Ph)
 z = cos(Th)
-s = sph_harm(emm,ell,Ph,Th).real
+s = sph_harm(m, l, Ph, Th).real
 s = s/np.max(np.abs(s))
 vmin = args.vmin if args.vmin else -args.vmax
 m = mlab.mesh(x, y, z, scalars=s, colormap=args.cmap,
@@ -86,12 +86,12 @@ if args.nodal_lines:
 # too many initial guesses, then take the unique solutions.  some of
 # these aren't zeros (because the root-finder fails) so we discard
 # them.
-    Nroots = ell - np.abs(emm) + 2
+    Nroots = l - np.abs(m) + 2
     mu = np.cos(np.linspace(0., np.pi, 5*Nroots))
-    mu = np.squeeze([fsolve(lambda z: lpmv(emm, ell, z), mui) for mui in mu])
+    mu = np.squeeze([fsolve(lambda z: lpmv(m, l, z), mui) for mui in mu])
     mu = np.unique(np.around(mu, decimals=13))
     mu = np.array([mui for mui in mu
-                   if np.around(lpmv(emm, ell, mui), decimals=4)==0.
+                   if np.around(lpmv(m, l, mui), decimals=4)==0.
                    and np.around(np.abs(mui), decimals=4) != 1.])
 
     node_kw = {'color':(0.,0.,0.),
@@ -108,15 +108,15 @@ if args.nodal_lines:
         mlab.plot3d(x, y, z, **node_kw)
 
     # pole-to-pole
-    for j in range(emm):
-        Phi0 = pi*(2*j+1)/2/emm
+    for j in range(m):
+        Phi0 = pi*(2*j+1)/2/m
         x = r*sin(th)*cos(Phi0)
         y = r*sin(th)*sin(Phi0)
         z = r*cos(th)
 
         mlab.plot3d(x, y, z, **node_kw)
 
-        Phi0 = pi*(2*j+1)/2/emm + np.pi
+        Phi0 = pi*(2*j+1)/2/m + np.pi
         x = r*sin(th)*cos(Phi0)
         y = r*sin(th)*sin(Phi0)
         z = r*cos(th)

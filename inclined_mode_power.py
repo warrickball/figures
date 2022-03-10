@@ -17,7 +17,7 @@ def factorial(n):
     if n == 0:
         return 1
     elif n > 0:
-        return np.prod(range(1, n))
+        return np.prod(range(1, n+1))
     else:
         raise ValueError('can only return factorial of integer >= 0')
 
@@ -25,7 +25,7 @@ def lorentz(x): return 1./(1.+x**2)
 
 def multiplet(x, l, freq, width, splitting, inc):
     legendre2 = lpmn(l, l, np.cos(inc))[0]**2
-    y = lorentz((x-freq)/width)*factorial(l)*legendre2[0][l]
+    y = lorentz((x-freq)/width)*legendre2[0][l]
     for m in range(1, l+1):
         energy = legendre2[m][l]*factorial(l-m)/factorial(l+m)
         y = y + lorentz((x-freq-m*splitting)/width)*energy

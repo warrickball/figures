@@ -1,11 +1,20 @@
 #!/usr/bin/env python
 
+from argparse import ArgumentParser
+
+parser = ArgumentParser()
+parser.add_argument('-X', type=str, default='0.02',
+                    help="string for Z (default='0.02')")
+parser.add_argument('-Z', type=str, default='0.7',
+                    help="string for X (default='0.7')")
+args = parser.parse_args()
+
+key = 'z%s_x%s' % (args.Z, args.X)
+
 import numpy as np
 from matplotlib import pyplot as pl
 from scipy.interpolate import RectBivariateSpline as RBS
 import os
-
-key = 'z0.02_x0.7'
 
 with open('%s/data/kap_data/gs98_%s.data' % (os.environ['MESA_DIR'], key),'r') as f:
     lines = f.readlines()

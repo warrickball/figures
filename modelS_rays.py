@@ -47,10 +47,10 @@ th_left = args.theta_left*TAU
 # Model S can be downloaded from
 # http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c
 try:
-    S = fgong.load_fgong('data/modelS.fgong', G=6.67232e-8, return_object=True)
+    S = fgong.load_fgong('data/modelS.fgong', G=6.67232e-8)
 except IOError:
     S = fgong.load_fgong('http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c',
-                         G=6.67232e-8, return_object=True)
+                         G=6.67232e-8)
     S.to_file('data/modelS.fgong')
 
 S.var = S.var[::-1] # convenient for interpolation to reverse data now

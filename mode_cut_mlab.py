@@ -21,6 +21,8 @@ parser.add_argument('-f', '--freq', type=float, default=None,
 parser.add_argument('-o', '--output', type=str, default=None,
                     help="save figure to given filename without displaying "
                     "it (forces software rendering)")
+parser.add_argument('--resolution', type=float, nargs=2, default=[600,600],
+                    help="resolution of image (default=[600,600])")
 parser.add_argument('--view', type=float, nargs=2, default=[15.0, 90.0],
                     help="viewing angle (default=[15.0, 90.0])")
 parser.add_argument('--bgcolor', type=float, nargs=3, default=[1,1,1],
@@ -44,7 +46,7 @@ if args.freq and args.enn:
 if args.output:
         mlab.options.offscreen = True
 
-mlab.figure(1, bgcolor=tuple(args.bgcolor), fgcolor=(0, 0, 0), size=(600, 600))
+mlab.figure(1, bgcolor=tuple(args.bgcolor), fgcolor=(0, 0, 0), size=args.resolution)
 mlab.clf()
 l = args.ell
 m = args.emm
@@ -63,8 +65,8 @@ def myplot():
 
     mlab.mesh(x, y, z, scalars=s, colormap='seismic')
 
-    S = fgong.load_fgong('data/modelS.fgong', return_object=True)
-    amde = adipls.load_amde('data/modelS.amde', return_object=True)
+    S = fgong.load_fgong('data/modelS.fgong')
+    amde = adipls.load_amde('data/modelS.amde')
     I = np.where(amde.l==l)[0]
     if args.freq:
         i = I[np.argmin((amde.nu_Ri[I]-args.freq/1e3)**2)]

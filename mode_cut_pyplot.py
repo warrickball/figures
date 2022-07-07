@@ -73,8 +73,8 @@ z = np.outer(np.ones(np.size(phi)), np.cos(theta))
 a = get_colour(theta, phi)
 ax.plot_surface(x, y, z, facecolors=a, **kw)
 
-S = fgong.load_fgong('data/modelS.fgong', return_object=True)
-amde = adipls.load_amde('data/modelS.amde', return_object=True)
+S = fgong.load_fgong('data/modelS.fgong')
+amde = adipls.load_amde('data/modelS.amde')
 I = np.where(amde.l==args.ell)[0]
 if args.freq:
     i = I[np.argmin((amde.nu_Ri[I]-args.freq/1e3)**2)]

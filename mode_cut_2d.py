@@ -47,18 +47,18 @@ def get_colour(theta, phi):
     a = 0.5+0.5*a/amax
     return pl.cm.seismic(a)
     
-S = fgong.load_fgong('data/modelS.fgong', return_object=True)
-css, eigs = adipls.load_amde('data/modelS.amde')
-I = np.where(css['ell']==args.ell)[0]
+S = fgong.load_fgong('data/modelS.fgong')
+amde = adipls.load_amde('data/modelS.amde')
+I = np.where(amde.l==args.ell)[0]
 if args.freq:
-    i = I[np.argmin((css['nu_Ri'][I]-args.freq)**2)]
+    i = I[np.argmin((amde.css['nu_Ri'][I]-args.freq)**2)]
 elif args.enn:
-    i = I[css['enn'][I]==args.enn][0]
+    i = I[amde.n[I]==args.enn][0]
 else:
-    i = I[css['enn'][I]==14][0]
+    i = I[amde.n[I]==14][0]
     
-r = eigs[i][:,0]
-y1 = eigs[i][:,1]
+r = amde.eigs[i][:,0]
+y1 = amde.eigs[i][:,1]
 rho = np.interp(r, S.x[::-1], S.rho[::-1])
 theta = np.linspace(0.0, 2.*np.pi, Ntheta)
 a = np.outer(r*rho**0.5*y1, np.ones(len(theta)))

@@ -7,7 +7,7 @@ from matplotlib import pyplot as pl
 # Model S can be downloaded from
 # http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c
 try:
-    s = fgong.load_fgong('data/modelS.fgong', G=6.67232e-8, return_object=True)
+    s = fgong.load_fgong('data/modelS.fgong', G=6.67232e-8)
 except IOError:
     try:
         from urllib2 import urlopen
@@ -20,7 +20,7 @@ except IOError:
 
     response.close()
 
-    s = fgong.load_fgong('data/modelS.fgong', G=6.67232e-8, return_object=True)
+    s = fgong.load_fgong('data/modelS.fgong', G=6.67232e-8)
         
 N = np.ones_like(s.N2)*1e-50
 N[s.N2>0] = np.sqrt(s.N2[s.N2>0])/2./np.pi

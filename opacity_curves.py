@@ -3,10 +3,10 @@
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
-parser.add_argument('-X', type=str, default='0.02',
-                    help="string for Z (default='0.02')")
-parser.add_argument('-Z', type=str, default='0.7',
+parser.add_argument('-X', type=str, default='0.7',
                     help="string for X (default='0.7')")
+parser.add_argument('-Z', type=str, default='0.02',
+                    help="string for Z (default='0.02')")
 args = parser.parse_args()
 
 key = 'z%s_x%s' % (args.Z, args.X)
@@ -51,8 +51,11 @@ for rho in np.arange(-10.,0.1,2.):
     c = [interpolator2(Ri,Ti) for (Ri,Ti) in zip(R,T) if Ti<4.] + \
         [interpolator1(Ri,Ti) for (Ri,Ti) in zip(R,T) if Ti>=4.]
     c = np.squeeze(c)
-    pl.plot(T, c, 'k-')
+    pl.plot(T, c, '-', color=pl.cm.viridis((rho+10)/10))
+    # pl.loglog(10**T, 10**c, '-', color=pl.cm.viridis((rho+10)/10*0.9))
 
 pl.xlabel(r'$\log_{10}(T/\mathrm{K})$')
 pl.ylabel(r'$\log_{10}(\kappa_\mathrm{R}/(\mathrm{cm}^2/\mathrm{g}))$')
+# pl.xlabel('temperature (K)')
+# pl.ylabel('Rosseland mean opacity (cm²/g)')
 pl.show()

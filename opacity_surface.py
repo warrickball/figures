@@ -3,10 +3,10 @@
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
-parser.add_argument('-X', type=str, default='0.02',
-                    help="string for Z (default='0.02')")
-parser.add_argument('-Z', type=str, default='0.7',
+parser.add_argument('-X', type=str, default='0.7',
                     help="string for X (default='0.7')")
+parser.add_argument('-Z', type=str, default='0.02',
+                    help="string for Z (default='0.02')")
 args = parser.parse_args()
 
 key = 'z%s_x%s' % (args.Z, args.X)

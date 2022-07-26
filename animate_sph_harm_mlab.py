@@ -1,12 +1,6 @@
 #!/usr/bin/env python
 
-import numpy as np
-from mayavi import mlab
-from scipy.special import sph_harm, lpmv
-from scipy.optimize import fsolve
-from numpy import pi, sin, cos
 from argparse import ArgumentParser
-import os
 
 parser = ArgumentParser(description="""Use Mayavi to animate a spherical harmonic with a chosen
 angular degree and azimuthal order.  """)
@@ -51,6 +45,13 @@ parser.add_argument('--show-nodal-lines', dest='nodal_lines', action='store_true
 parser.add_argument('--hide-nodal-lines', dest='nodal_lines', action='store_false')
 parser.set_defaults(nodal_lines=False)
 args = parser.parse_args()
+
+import numpy as np
+from mayavi import mlab
+from scipy.special import sph_harm, lpmv
+from scipy.optimize import fsolve
+from numpy import pi, sin, cos
+import os
 
 if args.output:
     mlab.options.offscreen = True

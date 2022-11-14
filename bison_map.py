@@ -24,6 +24,6 @@ for i, lon0 in enumerate([-45, 135]):
 
     for lat, lon in coords.values():
         if lon0-90 < lon < lon0+90:
-            pl.plot(lon, lat, 'ro', transform=ccrs.PlateCarree())
+            ax.plot(lon, lat, 'ro', transform=ccrs.PlateCarree())
 
 pl.show()

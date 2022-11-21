@@ -62,5 +62,7 @@ for row in ocs[np.argsort(ocs['age'])]:
 pl.xlabel(r"$\mathrm{G}_\mathrm{BP}-\mathrm{G}_\mathrm{RP}$")
 pl.ylabel(r"$M_\mathrm{G}$")
 pl.gca().invert_yaxis()
-pl.colorbar(label=r"$\log_{10}(\mathrm{age})$")
+pl.colorbar(pl.cm.ScalarMappable(cmap=pl.cm.jet,
+                                 norm=pl.Normalize(vmin=vmin, vmax=vmax)),
+            label=r"$\log_{10}(\mathrm{age})$")
 pl.show()

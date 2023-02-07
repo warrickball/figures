@@ -2,9 +2,20 @@
 
 from argparse import ArgumentParser
 
-parser = ArgumentParser()
-parser.add_argument('filters', type=str, nargs='+')
-parser.add_argument('--legend', type=str, nargs='+', default=[])
+parser = ArgumentParser(description="""
+Plots filter profiles retrieved from the Spanish Virtual Observatory's
+(SVO) Filter Profile Service (FPS).
+
+    http://svo2.cab.inta-csic.es/theory/fps/
+""")
+
+parser.add_argument('filters', type=str, nargs='+',
+                    help="Names of filters, as on SVO FPS. "
+                    "e.g. Generic/Bessell.U")
+parser.add_argument('--legend', type=str, nargs='+', default=[],
+                    help="Add a legend.  If arguments are given, use "
+                    "those.  Otherwise, use the part of filter names "
+                    "after '/'.")
 parser.add_argument('--interp', type=str, default='none',
                     choices={'none', 'pchip'})
 args = parser.parse_args()

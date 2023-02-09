@@ -41,7 +41,7 @@ from scipy.optimize import fsolve
 from allium import Sphere
 
 if args.output:
-        mlab.options.offscreen = True
+    mlab.options.offscreen = True
 
 mlab.figure(1, bgcolor=tuple(args.bgcolor), fgcolor=(0, 0, 0), size=args.resolution)
 mlab.clf()

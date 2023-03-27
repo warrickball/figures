@@ -14,11 +14,9 @@ except IOError:
     except ImportError:
         from urllib.request import urlopen
         
-    response = urlopen('http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c')
-    with open('data/modelS.fgong','wb') as f:
+    with (open('data/modelS.fgong','wb') as f,
+          urlopen('http://astro.phys.au.dk/~jcd/solar_models/fgong.l5bi.d.15c') as response):
         f.write(response.read())
-
-    response.close()
 
     s = fgong.load_fgong('data/modelS.fgong', G=6.67232e-8)
         
